@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Jost:ital,wght@0,100..900;1,100..900&family=Passion+One:wght@400;700;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+#notfound{
+    font-family: 'Changa One';
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    gap: 10px;
+    text-shadow: 5px 5px 20px #8337A7;
+    h2{
+        font-family: 'Passion One';
+        font-size: 250px;
+        letter-spacing: 20px;
+    }
+
+    a{
+        padding: 10px;
+        border: 1px solid #8337A7;
+        border-radius: 30px;
+        box-shadow: 0px 0px 10px #8337A7;
+        transition: 0.5s;
+        &:hover{
+            background-color: rgb(255, 255, 255);
+            color: #8337A7;
+        }
+    }
+}

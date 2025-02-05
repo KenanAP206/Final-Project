@@ -1,0 +1,29 @@
+#continue{
+    .cont-head{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+
+        a{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 20px;
+            transition: 0.5s;
+            border-radius: 15px;
+            svg{
+                color: blueviolet;
+            }
+            &:hover{
+                box-shadow: 0px 0px 20px blueviolet;
+                color: rgb(161, 60, 255);
+            }
+        }
+    }
+    .cont-cards{
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(330px,1fr));
+        gap: 20px 50px;
+    }
+}

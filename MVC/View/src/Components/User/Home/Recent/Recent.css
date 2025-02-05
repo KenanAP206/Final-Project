@@ -1,0 +1,18 @@
+#recent{
+
+    .recent-head{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        h1{
+            font-size: 40px;
+            font-weight: 800;
+        }
+    }
+
+    .recent-slider{
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+        gap: 20px;
+    }
+}

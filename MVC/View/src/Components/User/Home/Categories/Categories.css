@@ -1,0 +1,33 @@
+#categories{
+    .category-all{
+        gap: 20px 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+
+        .category-card{
+            display: flex;
+            gap: 5px;
+            padding: 5px 20px;
+            width: max-content;
+            border: 1px solid rgba(255, 255, 255, 0.192);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            img{
+                width:120px;
+                object-fit: contain;
+            }
+            .cc-txt{
+                padding: 30px;
+                h2{
+                    font-weight: 600;
+                    font-size: 25px;
+                }
+            }
+
+            &:hover{
+                box-shadow: 0px 0px 40px #ae00ff;
+            }
+        }
+    }
+}

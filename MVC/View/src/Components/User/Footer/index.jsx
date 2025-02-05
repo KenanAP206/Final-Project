@@ -45,7 +45,7 @@ function index() {
         </div>
       </div>
       <div className="footer-low">
-        All rights reserved by Vivid ©2024.
+        All rights reserved by WatchMaker ©2025.
       </div>
     </footer>
   )
