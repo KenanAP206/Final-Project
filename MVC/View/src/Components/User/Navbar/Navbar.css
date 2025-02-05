@@ -1,0 +1,109 @@
+nav{
+    font-family: 'Jost';
+    padding: 30px 5%;
+    max-height: 13vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 3px 8px 0px rgba(0, 0, 0, 0.3);
+    .logo{
+        padding: 10px;
+        width: max-content;
+        
+        img{
+            width: 60%;
+            object-fit: cover;
+        }
+    }
+
+    .nav-mid{
+
+        display: flex;
+        gap: 50px;
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .nav-r{
+        display: flex;
+        align-items: center;
+        gap: 30px;
+
+        .searcher{
+            display: flex;
+            align-items: center;
+            background-color: #212020;
+            padding: 10px 15px;
+            font-size: 18px;
+            border-radius: 5px;
+            width: 300px;
+            svg{
+                color: #fefefea3;
+            }
+            input{
+                width: 100%;
+                padding-left:10px;
+                outline: none;
+                border:none;
+                
+            }
+        }
+        svg{
+            cursor: pointer;
+            font-size: 20px;
+
+        }
+        .notific{
+            padding:8px;
+            font-size: 40px;
+            border-radius: 5px;
+            border-color: rgba(255, 255, 255, 0.148);
+  
+        }
+
+        .user-btn{
+            color: #1B1B1B;
+            font-size: 40px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        .menu-btn{
+            display: none;
+            color: #1B1B1B;
+            font-size: 40px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    }
+}
+
+@media (max-width:1200px) {
+    nav{
+        .nav-mid{
+            display: none;
+        }
+        .nav-r{
+            svg{
+                display: none;
+            }
+            .menu-btn{
+                display: flex;
+            }
+        }
+    }
+}
+
+@media (max-width:700px) {
+    nav{
+        .logo{
+            img{
+                width: 200px;
+            }
+        }
+        .nav-r{
+            .searcher{
+                width: auto;
+            }
+        }
+    }
+}
