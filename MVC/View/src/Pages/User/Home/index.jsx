@@ -4,6 +4,7 @@ import Categories from '../../../Components/User/Home/Categories'
 import Trend from '../../../Components/User/Home/Trend'
 import Continue from '../../../Components/User/Home/Continue'
 import Recent from '../../../Components/User/Home/Recent'
+import Trailer from '../../../Components/User/Home/Trailer'
 function index() {
   return (
     <main>
@@ -12,6 +13,7 @@ function index() {
       <Trend/>
       <Continue/>
       <Recent/>
+      <Trailer/>
     </main>
   )
 }
