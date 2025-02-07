@@ -9,7 +9,7 @@ function index() {
     <footer>
       <div className="footer-up">
         <div className="foot1">
-          <img alt="footlogo" srcset="./src/assets/Images/logo2.png" />
+          <img alt="footlogo" srcset="/src/assets/Images/logo2.png" />
           <p>Stay connected with us and lets know
             more stories about new movies and
             More Explorer Us for get it</p>

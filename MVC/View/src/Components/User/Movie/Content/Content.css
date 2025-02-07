@@ -1,0 +1,177 @@
+.content-blur{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: url('../../../../assets/Images/Jinx wallpaper.jpg');
+    background-size: cover;
+    background-position:  0%;
+    background-repeat: no-repeat;
+    filter: blur(10px);
+    background-color: #252121;
+    z-index: -1;
+}
+#movcontent{
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    .mcontent-up{
+        padding: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        .mcontent-video{
+            width: 100%;
+            iframe{
+                border-radius: 15px;
+                width: 100%;
+                height: 80vh;
+            }
+        }
+    }
+
+    .mcontent-low{
+        width: 100%;
+        background-color: #1B1B1B;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .mcl-left{
+            width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            .mcl-header{
+                h2{
+                display: flex;
+                align-items: end;
+                flex-direction: row;
+                gap: 35px;
+                font-size: 24px;
+                font-weight: 600;
+                span{
+                    display: flex;
+                    flex-direction: row; 
+                    gap: 5px;
+                    font-size: 18px;
+                    align-items: center;
+                    font-weight: 400;
+                    .star{
+                        margin-right: 15px;
+                        color: #EEAA0F;
+                    }
+                }
+                }
+            }
+            .mcl-l-tags{
+            
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                span{
+                    padding: 1px 3px;
+                    border: 1px solid white;
+                    border-radius: 5px;
+                    font-size: 13px;
+                }
+            }
+
+            .mcl-info{
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                h2{
+                    font-weight: 700;
+                    font-size: 20px;
+                }
+                p{
+                    font-size: 15px;
+                    font-weight: 500;
+                }
+            }
+
+            button{
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                width: max-content;
+                font-size: 20px;
+                padding: 10px 30px;
+                border-radius: 15px;
+                font-weight: 600;
+                background-color: blueviolet;
+                cursor: pointer;
+                transition: 0.8s;
+
+
+                svg{
+                    font-size: 23px;
+                }
+                &:hover{
+                    box-shadow: 0px 0px 25px blueviolet;
+                }
+            }
+        }
+        .mcl-right{
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            h2{
+                margin-bottom: 10px;
+                display: flex;
+                align-items: end;
+                flex-direction: row;
+                gap: 35px;
+                font-size: 24px;
+                font-weight: 600;
+            }
+        
+            .genre{
+                width: 80%;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 10px 0;
+                margin-top: 20px;
+                display: flex;
+                gap: 10px;
+                h4{
+                    width: 50px;
+                    height: 100%;
+
+                }
+                p{
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    span{
+                        font-size: 14px;
+                        padding: 1px 10px;
+                        border-radius: 30px;
+                        border: 1px solid rgba(255, 255, 255, 0.267);
+                    }
+                }
+            }
+        
+            }
+
+
+
+        h6{
+            font-size: 14px;
+            span{
+                color: rgba(255, 255, 255, 0.715);
+            }
+        }
+    }
+
+    hr{
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    
+
+}

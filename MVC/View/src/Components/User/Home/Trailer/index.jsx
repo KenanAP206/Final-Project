@@ -48,7 +48,7 @@ function index() {
                    <p>Action | 2021 | EP-24</p>
                    </div>
                    <div className="tc-hov-low">
-                    <button  onClick={() => handleWatchTrailer('The Garden of Words', "https://www.youtube.com/embed/FMabhvDoolc" )}> <FaRegPlayCircle/> Watch Trailer</button> <p><GoClock/> 02:26</p>
+                    <button  onClick={() => handleWatchTrailer('Attack on Titan', "https://www.youtube.com/embed/LV-nazLVmgo" )}> <FaRegPlayCircle/> Watch Trailer</button> <p><GoClock/> 02:26</p>
                    </div>
                 </div>
             </div>

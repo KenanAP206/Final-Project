@@ -1,6 +1,6 @@
 import React from 'react'
 import Slider from 'react-slick';
-import './Recent.css'
+import './Top.css'
 import Card from '../../Card1/index'
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
@@ -43,9 +43,9 @@ function SampleNextArrow(props) {
 
 
     return (
-        <section id='recent'>
-            <div className="recent-head">
-                <div className="hadmer">Recently Released</div>
+        <section id='top'>
+            <div className="top-head">
+                <div className="hadmer">Top Shows</div>
 
             </div>
             <Slider {...settings}>

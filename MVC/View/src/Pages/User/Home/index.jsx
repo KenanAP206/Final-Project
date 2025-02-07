@@ -5,6 +5,7 @@ import Trend from '../../../Components/User/Home/Trend'
 import Continue from '../../../Components/User/Home/Continue'
 import Recent from '../../../Components/User/Home/Recent'
 import Trailer from '../../../Components/User/Home/Trailer'
+import Top from '../../../Components/User/Home/Top'
 function index() {
   return (
     <main>
@@ -14,6 +15,7 @@ function index() {
       <Continue/>
       <Recent/>
       <Trailer/>
+      <Top/>
     </main>
   )
 }

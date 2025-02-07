@@ -10,7 +10,7 @@ function index() {
   return (
     <header>
       <nav>
-        <div className="logo"> <NavLink to='/'><img alt="logo" srcset="./src/assets/Images/logo2.png" />  </NavLink></div>
+        <div className="logo"> <NavLink to='/'><img alt="logo" srcset="/src/assets/Images/logo2.png" />  </NavLink></div>
         <div className="nav-mid">
           <NavLink to='/' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Home</NavLink>
           <NavLink to='/allshows' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Shows</NavLink>
