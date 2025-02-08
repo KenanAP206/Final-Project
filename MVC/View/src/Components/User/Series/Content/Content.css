@@ -219,4 +219,9 @@
 .episode-item.active {
     background: #333;
 }
-  
+
+.text-white{
+    font-size: 20px;
+    color: #ffffffc9;
+    margin: 5px 0 10px;
+}

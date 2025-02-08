@@ -56,7 +56,7 @@ function Index() {
       },
   ];
 
-  // Seçili bölümü state olarak sakla (başlangıçta ilk bölüm)
+ 
   const [selectedEpisode, setSelectedEpisode] = useState(episodes[0]);
 
   return (
@@ -65,9 +65,8 @@ function Index() {
 
       <section id="sercontent">
         <div className="scontent-up">
-          {/* Bölüm Listesi */}
           <div className="scontent-episodes">
-            <h3 className="text-white font-bold mb-2">Episodes</h3>
+            <h3 className="text-white font-bold m-2">Episodes - 11</h3>
             {episodes.map((ep) => (
               <div
                 key={ep.id}
@@ -82,7 +81,6 @@ function Index() {
             ))}
           </div>
 
-          {/* Video Oynatıcı */}
           <div className="scontent-video">
             <iframe
               src={selectedEpisode.videoUrl}
@@ -92,7 +90,6 @@ function Index() {
           </div>
         </div>
 
-        {/* Alt Bilgi */}
         <div className="scontent-low">
           <div className="scl-left">
             <div className="scl-header">
