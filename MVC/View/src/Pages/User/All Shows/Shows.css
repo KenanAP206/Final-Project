@@ -39,14 +39,44 @@
             .filter-selections{
                 display: grid;
                 gap: 10px 5px;
-                grid-template-columns: repeat(auto-fit,minmax(80px,1fr));
+                grid-template-columns: repeat(auto-fit,minmax(100px,1fr));
 
-                select{
-                    font-size: 13px;
+                .select{
+                    width: 100px;
+                    font-size: 15px;
                     color: #ffffffc3;
                     padding: 5px 10px;
                     background-color: #212020;
                     border-radius: 5px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+
+                    .capitalize{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        gap: 2px;
+                    }
+                }
+                .selectedcount{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 1px;
+                    border-radius: 15px;
+                    width: 15px;
+                    background-color: #af43fc;
+                }
+
+                .checkboxdiv{
+                    background-color: #212020;
+                    padding: 5px;
+                    text-transform: capitalize;
+
+                    .checkboxdiv-header{
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.189);
+                    }
                 }
             }
 
