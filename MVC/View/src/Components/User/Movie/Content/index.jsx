@@ -1,10 +1,31 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
+import { useParams } from 'react-router';
 import './Content.css'
 import { FaStar } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { IoPlayOutline } from "react-icons/io5";
-
 function index() {
+    const { id } = useParams();
+    const [show, setShow] = useState(null);
+
+    useEffect(() => {
+
+        const fetchShow = () => {
+            axios.get(`http://localhost:3000/shows/${id}`)
+                .then(response => {
+                    setShow(response.data.data);
+                })
+                .catch(error => {
+                    console.error("Error fetching show:", error);
+                });
+        };
+
+        fetchShow();
+    }, [id]);
+
+    if (!show) return <div>Loading...</div>;
+
     return (
         <div>
             <div className="content-blur">
@@ -21,48 +42,50 @@ function index() {
                 <div className="mcontent-low">
                     <div className="mcl-left">
                         <div className="mcl-header">
-                            <h2><p>Demon Slayer: Kimetsu no Yaiba : Season 1 </p> <span>4.9 <FaStar className='star' /> 200 <IoEye /> </span></h2>
+                            <h2><p>{show.name}</p> <span>{show.rating} <FaStar className='star' /> {show.views} <IoEye /> </span></h2>
                         </div>
                         <div className="mcl-l-tags">
-                            <span> 18+ </span>
-                            <span> HD </span>
-                            <span> 2029</span>
-                            <span> Anime </span>
-                            <span> 1hr 45m</span>
+                            <span> {show.age_rating} </span>
+                            <span> {show.quality} </span>
+                            <span> {show.year}</span>
+                            <span> {show.sort} </span>
+                            <span> {show.duration}</span>
                         </div>
                         <div className="mcl-info">
                             <h2>About the Story</h2>
-                            <p>Flame Hashira Kyojuro Rengoku receives new orders: Travel to the Mugen Train, where over forty people have
-                                gone missing, and conduct an investigation. Leaving the Demon Slayer Corps Headquarters, he sets off on this
-                                new mission.
+                            <p>{show.desc}
                             </p>
 
                         </div>
 
-                        <h6><span>Staring:</span>  Natsuki Hanae, Akari Kito, Hiro Shimono</h6>
-                        <h6><span>Language:</span> Japanese, English, English (India), Español (América Latina)</h6>
-                        <h6><span>Subtitles:</span>  Japanese, English</h6>
+                        <h6><span>Staring:</span>  {show.staring}</h6>
+                        <h6><span>Language:</span> {show.language}</h6>
+                        <h6><span>Subtitles:</span>  {show.subtitles}</h6>
 
-                        <button><IoPlayOutline/> Play</button>
+                        <button><IoPlayOutline /> Play</button>
 
                     </div>
                     <div className="mcl-right">
-                            <h2>
+                        <h2>
                             About
-                            </h2>
+                        </h2>
 
-                            <h6><span>Type:</span> Movie</h6>
-                            <h6><span>Director:</span> Bones</h6>
-                            <h6><span>Date aired:</span> Jan 15, 2022</h6>
-                            <h6><span>Status:</span> Completed</h6>
-                            <h6><span>Country:</span> Japan</h6>
-                            <h6><span>Premiered:</span> Winter 2022</h6>
-                            <h6><span>Duration:</span> 120 min</h6>
+                        <h6><span>Type:</span> {show.sort}</h6>
+                        <h6><span>Director:</span> {show.director}</h6>
+                        <h6><span>Date aired:</span> {show.date_aired}</h6>
+                        <h6><span>Status:</span> {show.status}</h6>
+                        <h6><span>Country:</span> {show.country}</h6>
+                        <h6><span>Premiered:</span> {show.premiered}</h6>
+                        <h6><span>Duration:</span> {show.duration}</h6>
 
-                            <div className="genre">
-                                <h4>Genre:</h4>
-                                <p><span>Action</span> <span>Thriller</span> <span> Sci-Fi</span> <span>Cyberpunk</span> <span>Shounen</span></p>
-                            </div>
+                        <div className="genre">
+                            <h4>Genre:</h4>
+                            <p>
+                                {show.genre.split(",").map((genre, index) => (
+                                    <span key={index}>{genre.trim()}</span>
+                                ))}
+                            </p>
+                        </div>
                     </div>
                 </div>
 

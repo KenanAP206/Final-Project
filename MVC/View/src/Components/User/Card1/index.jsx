@@ -5,11 +5,22 @@ import {NavLink} from 'react-router-dom'
 import { FaStar } from "react-icons/fa";
 
 function index(props) {
+  const navigateTo = () => {
+    if (props.type === "Movie") {
+
+      return `/movie/${props.id}`;
+    } else {
+      return `/series/${props.id}`;
+    }
+  };
+
+  
+
   return (
     <div id='card1'>
       <div className="card-up">
         <img alt="" srcSet={props.image} />
-        <NavLink> 
+        <NavLink to={navigateTo()}> 
         Watch Now <RiPlayLargeLine/>
          </NavLink>
         </div>
