@@ -1,11 +1,13 @@
-import React from 'react'
+// Pages/Admin/Dashboard/index.jsx
+import { Card, CardContent, CardHeader } from '@mui/material';
 
-function index() {
-  return (
-    <div>
-      DASHBOARD
-    </div>
-  )
-}
+const Dashboard = () => (
+  <Card>
+    <CardHeader title="Dashboard" />
+    <CardContent>
+      Hoş geldiniz! Bu admin panelinizin ana sayfasıdır.
+    </CardContent>
+  </Card>
+);
 
-export default index
+export default Dashboard;

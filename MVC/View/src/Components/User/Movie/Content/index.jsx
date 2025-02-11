@@ -4,11 +4,25 @@ import { useParams } from 'react-router';
 import './Content.css'
 import { FaStar } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
-import { IoPlayOutline } from "react-icons/io5";
+import { IoPlayOutline, IoClose } from "react-icons/io5";
 function index() {
     const { id } = useParams();
     const [show, setShow] = useState(null);
+    const [isOverlayVisible, setOverlayVisible] = useState(false);
+    const [selectedAnime, setSelectedAnime] = useState(null);
+    const [videoUrl, setVideoUrl] = useState('');
 
+    const handleWatchTrailer = (anime, url) => {
+        setSelectedAnime(anime);
+        setVideoUrl(url);
+        setOverlayVisible(true);
+    };
+
+    const handleCloseOverlay = () => {
+        setOverlayVisible(false);
+        setSelectedAnime(null);
+        setVideoUrl('');
+    };
     useEffect(() => {
 
         const fetchShow = () => {
@@ -62,7 +76,7 @@ function index() {
                         <h6><span>Language:</span> {show.language}</h6>
                         <h6><span>Subtitles:</span>  {show.subtitles}</h6>
 
-                        <button><IoPlayOutline /> Play</button>
+                        <button onClick={() => handleWatchTrailer('Attack on Titan', "https://www.youtube.com/embed/LV-nazLVmgo" )}><IoPlayOutline /> Play</button>
 
                     </div>
                     <div className="mcl-right">
@@ -88,8 +102,21 @@ function index() {
                         </div>
                     </div>
                 </div>
-
+                {isOverlayVisible && (
+                    <div className="overlay">
+                        <div className="overlay-content">
+                            <div className="overlay-header">
+                                <h2>{selectedAnime}</h2>
+                                <button className="close-button" onClick={handleCloseOverlay}><IoClose /> Close</button>
+                            </div>
+                            <iframe width="937" height="527" src={videoUrl} title={`${selectedAnime} Trailer`} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+                        </div>
+                    </div>
+                )}
                 <hr />
+
+
+               
             </section>
         </div>
     )

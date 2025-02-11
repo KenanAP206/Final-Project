@@ -21,7 +21,9 @@ let ShowSchema = new Schema({
   country:String,
   genre:String,
   premiered:String,
-  image: String
+  image: String,
+  trailer: String,
+  isNew: Boolean
 });
 
 export let ShowModel = model('shows', ShowSchema);

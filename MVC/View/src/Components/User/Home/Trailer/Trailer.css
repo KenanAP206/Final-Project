@@ -227,6 +227,7 @@
   }
   
   .close-button {
+    cursor: pointer;
     margin-right: 30px;
     background: transparent;
     border: none; 
