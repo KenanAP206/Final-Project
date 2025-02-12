@@ -41,7 +41,7 @@ const EpisodesSection = () => {
     return (
         <div style={{ marginTop: '2rem', borderTop: '1px solid #ccc', paddingTop: '1rem' }}>
             <h3>Episodes</h3>
-            {record.type === 'movie' ? (
+            {record.type === 'Movie' ? (
                 <div>
                     <p style={{ color: '#666' }}>Movies can only have one episode.</p>
                     <EpisodeList maxEpisodes={1} />

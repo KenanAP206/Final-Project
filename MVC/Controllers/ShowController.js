@@ -3,8 +3,13 @@ import {ShowModel} from '../Models/ShowModel.js';
 export const ShowController = {
   getAll: async (req, res) => {
     try {
-      const { page = 1, perPage = 10 } = req.query;
-      const sort = req.query.sort ? JSON.parse(req.query.sort) : { _id: 1 };
+      const { page = 1, perPage = 10, sortBy, order } = req.query;
+      const sort = {};
+      if (sortBy && order) {
+        sort[sortBy] = order.toLowerCase() === 'desc' ? -1 : 1;
+      } else {
+        sort._id = 1; 
+      } 
       
       const shows = await ShowModel.find()
         .sort(sort)

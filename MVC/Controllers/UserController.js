@@ -5,7 +5,7 @@ export const UserController = {
     try {
       const { page = 1, perPage = 10, sortBy, order } = req.query;
       
-      // Create sort object based on sortBy and order parameters
+    
       const sort = {};
       if (sortBy && order) {
         sort[sortBy] = order.toLowerCase() === 'desc' ? -1 : 1;

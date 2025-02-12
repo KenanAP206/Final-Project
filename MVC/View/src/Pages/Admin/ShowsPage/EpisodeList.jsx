@@ -64,7 +64,13 @@ const EpisodeList = ({ maxEpisodes }) => {
             return;
         }
 
-        // Check if we've reached the episode limit for movies
+        // Check if the show type is 'movie' and if an episode already exists
+        if (record.type === 'movie' && episodes.length > 0) {
+            notify('Movies can only have one episode.', { type: 'warning' });
+            return;
+        }
+
+        // Check if we've reached the episode limit for series
         if (maxEpisodes && episodes.length >= maxEpisodes) {
             notify('Cannot add more episodes. Maximum limit reached.', { type: 'warning' });
             return;
@@ -132,7 +138,6 @@ const EpisodeList = ({ maxEpisodes }) => {
 
     return (
         <Box mt={2}>
-            {/* Only show the add episode form if we haven't reached the limit */}
             {(!maxEpisodes || episodes.length < maxEpisodes) && (
                 <Box sx={{ marginBottom: '1rem' }}>
                     <TextField

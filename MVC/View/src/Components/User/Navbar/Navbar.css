@@ -78,7 +78,7 @@
 }
 
 @media (max-width:1200px) {
-    nav{
+    .navbarim{
         .nav-mid{
             display: none;
         }
@@ -94,7 +94,7 @@
 }
 
 @media (max-width:700px) {
-    nav{
+    .navbarim{
         .logo{
             img{
                 width: 200px;

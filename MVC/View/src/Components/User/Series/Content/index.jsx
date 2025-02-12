@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router';
 import "./Content.css";
 import { FaStar } from "react-icons/fa";
-import { IoEye, IoPlayOutline,IoClose } from "react-icons/io5";
+import { IoEye, IoPlayOutline, IoClose } from "react-icons/io5";
 function Index() {
   const { id } = useParams();
   const [show, setShow] = useState(null);
@@ -11,7 +11,7 @@ function Index() {
   const [isOverlayVisible, setOverlayVisible] = useState(false);
   const [selectedAnime, setSelectedAnime] = useState(null);
   const [videoUrl, setVideoUrl] = useState('');
-
+  const [episodes, setEpisodes] = useState([]);
   const handleWatchTrailer = (anime, url) => {
     setSelectedAnime(anime);
     setVideoUrl(url);
@@ -23,56 +23,9 @@ function Index() {
     setSelectedAnime(null);
     setVideoUrl('');
   };
-  const episodes = [
-    {
-      id: 1,
-      title: "E1 - Flame Hashira Kyojuro Rengoku",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532350&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 2,
-      title: "E2 - Mugen Train Mission",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532351&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 3,
-      title: "E3 - The First Battle",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532352&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 4,
-      title: "E3 - The First Battle",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532352&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 5,
-      title: "E3 - The First Battle",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532352&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 5,
-      title: "E3 - The First Battle",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532352&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 5,
-      title: "E3 - The First Battle",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532352&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-    {
-      id: 5,
-      title: "E3 - The First Battle",
-      videoUrl: "http://video.sibnet.ru/shell.php?videoid=4532352&share=1",
-      thumbnail: "https://imgs.search.brave.com/pd3cfPrj-fgtJi7uTeSb_qX-DSrI74s9NqbEaaB-1yg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93MC5w/ZWFrcHguY29tL3dh/bGxwYXBlci82MTYv/MzQ3L0hELXdhbGxw/YXBlci1kZW1vbi1z/bGF5ZXItdGh1bWJu/YWlsLmpwZw",
-    },
-  ];
+
+
+  
   useEffect(() => {
     const fetchShow = () => {
       axios.get(`http://localhost:3000/shows/${id}`)
@@ -84,8 +37,17 @@ function Index() {
           console.error("Error fetching show:", error);
         });
     };
-    if (episodes.length > 0) {
-      setSelectedEpisode(episodes[0]); // Set the first episode after episodes are loaded
+    axios.get(`http://localhost:3000/episodes/shows/${id}`)
+    .then(response => {
+      setEpisodes(response.data);
+      console.log(episodes);
+      
+    })
+    .catch(error => {
+      console.error("Error fetching show:", error);
+    });
+    if (episodes?.length > 0) {
+      setSelectedEpisode(episodes[0]); 
     }
 
     fetchShow();
@@ -113,23 +75,23 @@ function Index() {
       <section id="sercontent">
         <div className="scontent-up">
           <div className="scontent-episodes">
-            <h3 className="text-white font-bold m-2">Episodes - {episodes.length}</h3>
-            {episodes.map((ep) => (
+            <h3 className="text-white font-bold m-2">Episodes - {episodes?.length}</h3>
+            {episodes.length > 0 && episodes.map((ep) => (
               <div
                 key={ep.id}
                 className={`episode-item ${selectedEpisode?.id === ep.id ? "active" : ""
                   }`}
                 onClick={() => handleEpisodeClick(ep)}
               >
-                <img src={ep.thumbnail} alt={ep.title} className="thumbnail" />
-                <p>{ep.title}</p>
+                <img src={show.image} className="thumbnail" />
+                <p>{show.name} - Episode {ep.order}</p>
               </div>
             ))}
           </div>
 
           <div className="scontent-video">
             <iframe
-              src={selectedEpisode?.videoUrl}
+              src={selectedEpisode?.link}
               title="Episode Player"
               allowFullScreen
             ></iframe>
@@ -176,9 +138,13 @@ function Index() {
             <div className="genre">
               <h4>Genre:</h4>
               <p>
-                {show.genre.split(",").map((genre, index) => (
-                  <span key={index}>{genre.trim()}</span>
-                ))}
+                {Array.isArray(show.genre) && show.genre.length > 0 ?
+                  show.genre.flatMap(genre => genre.split(",")).map((genre, index) => (
+                    <span key={index}>{genre.trim()}</span>
+                  ))
+                  : <span>No genres available</span>
+                }
+
               </p>
             </div>
           </div>

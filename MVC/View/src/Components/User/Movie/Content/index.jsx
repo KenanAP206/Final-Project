@@ -11,7 +11,8 @@ function index() {
     const [isOverlayVisible, setOverlayVisible] = useState(false);
     const [selectedAnime, setSelectedAnime] = useState(null);
     const [videoUrl, setVideoUrl] = useState('');
-
+    const [episodes, setEpisodes] = useState({});
+    
     const handleWatchTrailer = (anime, url) => {
         setSelectedAnime(anime);
         setVideoUrl(url);
@@ -23,8 +24,9 @@ function index() {
         setSelectedAnime(null);
         setVideoUrl('');
     };
-    useEffect(() => {
 
+
+    useEffect(() => {
         const fetchShow = () => {
             axios.get(`http://localhost:3000/shows/${id}`)
                 .then(response => {
@@ -34,10 +36,23 @@ function index() {
                     console.error("Error fetching show:", error);
                 });
         };
+        const fetchEpisodes = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/episodes/shows/${id}`);
+          
+                setEpisodes(response.data);
 
+                
+            } catch (error) {
+                console.error("Error fetching episodes:", error);
+            }
+        };
+
+        fetchEpisodes();
         fetchShow();
     }, [id]);
 
+ 
     if (!show) return <div>Loading...</div>;
 
     return (
@@ -50,7 +65,7 @@ function index() {
 
                 <div className="mcontent-up">
                     <div className="mcontent-video">
-                        <iframe src='http://video.sibnet.ru/shell.php?videoid=4532350&share=1'></iframe>
+                        <iframe src={episodes[0]?.link || ''}></iframe>
                     </div>
                 </div>
                 <div className="mcontent-low">
@@ -95,9 +110,13 @@ function index() {
                         <div className="genre">
                             <h4>Genre:</h4>
                             <p>
-                                {show.genre.split(",").map((genre, index) => (
-                                    <span key={index}>{genre.trim()}</span>
-                                ))}
+                            {Array.isArray(show.genre) && show.genre.length > 0 ?
+                  show.genre.flatMap(genre => genre.split(",")).map((genre, index) => (
+                    <span key={index}>{genre.trim()}</span>
+                  ))
+                  : <span>No genres available</span>
+                }
+
                             </p>
                         </div>
                     </div>
