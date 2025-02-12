@@ -4,23 +4,24 @@ import { fetchUtils } from 'react-admin';
 const apiUrl = 'http://localhost:3000'; 
 const httpClient = fetchUtils.fetchJson;
 
-const dataProvider = {
+export const dataProvider = {
     getList: async (resource, params) => {
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
+        
         const query = {
-            sort: JSON.stringify({[field]: order === 'ASC' ? 1 : -1}),
-            range: JSON.stringify([(page - 1) * perPage, page * perPage]),
+            page,
+            perPage,
+            sort: JSON.stringify({ [field]: order === 'ASC' ? 1 : -1 }),
             filter: JSON.stringify(params.filter),
         };
+
         const url = `${apiUrl}/${resource}?${new URLSearchParams(query)}`;
 
         const { json, headers } = await httpClient(url);
+        
         return {
-            data: json.map(resource => ({
-                ...resource,
-                id: resource._id
-            })),
+            data: json.map(record => ({ ...record, id: record._id })),
             total: parseInt(headers.get('content-range').split('/').pop(), 10),
         };
     },

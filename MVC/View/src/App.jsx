@@ -34,7 +34,7 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Route>
      
-        <Route path='/admin' element={<AdminRoot />}>
+        <Route path='/admin/*' element={<AdminRoot />}>
           <Route index element={<Dashboard />} />
           <Route path='users' element={<Users />} />
         </Route>

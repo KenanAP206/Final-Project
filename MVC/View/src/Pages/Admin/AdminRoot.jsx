@@ -1,7 +1,9 @@
 // Pages/Admin/AdminRoot.jsx
 import { Admin, Resource, fetchUtils } from 'react-admin';
-import { UserList, UserEdit, UserCreate } from './UsersPage/Users';
+import { UserList } from './UsersPage/Users';
 import Dashboard from './Dashboard';
+import UserEdit from './EditPage/UserEdit';
+import UserCreate from './CreatePage/UserCreate';
 
 const httpClient = (url, options = {}) => {
     if (!options.headers) {
@@ -135,12 +137,8 @@ const authProvider = {
     checkError: () => Promise.resolve(),
     checkAuth: () => Promise.resolve(),
     getPermissions: () => Promise.resolve(),
-    getLoginUrl() {
-        return '/admin';
-    },
-    getDashboardUrl() {
-        return '/admin';
-    }
+    getLoginUrl: () => '/login',
+    getDashboardUrl: () => '/admin'
 };
 
 const AdminRoot = () => (

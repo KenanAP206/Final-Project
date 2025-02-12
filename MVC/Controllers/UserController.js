@@ -1,42 +1,154 @@
 import { UserModel } from '../Models/UserModel.js';
 
 export const UserController = {
-  getAll: async (req, res) => {
-    const users = await UserModel.find();
-    const total = await UserModel.countDocuments();
+  getList: async (req, res) => {
+    try {
+      const { page = 1, perPage = 10 } = req.query;
+      const sort = req.query.sort ? JSON.parse(req.query.sort) : { _id: 1 };
+      
+      const users = await UserModel.find()
+        .sort(sort)
+        .skip((page - 1) * perPage)
+        .limit(parseInt(perPage));
 
-    // Eğer kullanıcı yoksa, uygun bir yanıt döndür
-    if (users.length === 0) {
-      res.set('Content-Range', 'users 0-0/0');
-      return res.json({ data: [], total: 0 }); // Boş veri döndür
+      const total = await UserModel.countDocuments();
+
+      // React Admin için doğru format
+      const formattedUsers = users.map(user => ({
+        ...user.toObject(),
+        id: user._id
+      }));
+
+      // Content-Range header'ını ekle
+      res.set('Content-Range', `users ${(page - 1) * perPage}-${page * perPage}/${total}`);
+      res.set('Access-Control-Expose-Headers', 'Content-Range');
+      
+      res.json({
+        data: formattedUsers,
+        total: total
+      });
+    } catch (error) {
+      console.error('GetList Error:', error);
+      res.status(500).json({ error: error.message });
     }
+  },
 
-    // Kullanıcıları 'id' anahtarı ile döndür
-    const formattedUsers = users.map(user => ({
-      id: user._id, // Mongoose'dan gelen _id'yi id olarak ayarlayın
-      name: user.name,
-      email: user.email,
-      __v: user.__v
-    }));
+  getOne: async (req, res) => {
+    try {
+      const user = await UserModel.findById(req.params.id);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      // React Admin için doğru format
+      const formattedUser = {
+        ...user.toObject(),
+        id: user._id
+      };
+      res.json({ data: formattedUser });
+    } catch (error) {
+      console.error('GetOne Error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  },
 
-    res.set('Content-Range', `users 0-${formattedUsers.length - 1}/${total}`);
-    res.json({ data: formattedUsers.data ? formattedUsers.data : formattedUsers, total: total}); // Yanıt formatını güncelle
+  create: async (req, res) => {
+    try {
+      const user = new UserModel(req.body);
+      const savedUser = await user.save();
+      // React Admin için doğru format
+      const formattedUser = {
+        ...savedUser.toObject(),
+        id: savedUser._id
+      };
+      res.status(201).json({ data: formattedUser });
+    } catch (error) {
+      console.error('Create Error:', error);
+      res.status(500).json({ error: error.message });
+    }
   },
-  getById: async (req, res) => {
-    const user = await UserModel.findById(req.params.id);
-    res.json({data: user});
+
+  update: async (req, res) => {
+    try {
+      const user = await UserModel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      // React Admin için doğru format
+      const formattedUser = {
+        ...user.toObject(),
+        id: user._id
+      };
+      res.json({ data: formattedUser });
+    } catch (error) {
+      console.error('Update Error:', error);
+      res.status(500).json({ error: error.message });
+    }
   },
-  postUser: async (req, res) => {
-    const user = new UserModel(req.body);
-    await user.save();
-    res.json(user);
+
+  delete: async (req, res) => {
+    try {
+      const user = await UserModel.findByIdAndDelete(req.params.id);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      // React Admin için doğru format
+      const formattedUser = {
+        ...user.toObject(),
+        id: user._id
+      };
+      res.json({ data: formattedUser });
+    } catch (error) {
+      console.error('Delete Error:', error);
+      res.status(500).json({ error: error.message });
+    }
   },
-  putUser: async (req, res) => {
-    const user = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(user);
+
+  deleteMany: async (resource, params) => {
+    const { ids } = params;
+    const responses = await Promise.all(
+        ids.map(id => 
+            httpClient(`http://localhost:3000/${resource}/${id}`, {
+                method: 'DELETE',
+            })
+        )
+    );
+    return { data: responses.map(({ json }) => json.id) };
   },
-  deleteUser: async (req, res) => {
-    await UserModel.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
+
+  getMany: async (resource, params) => {
+    const { ids } = params;
+    const responses = await Promise.all(
+        ids.map(id => 
+            httpClient(`http://localhost:3000/${resource}/${id}`)
+        )
+    );
+    return {
+        data: responses.map(({ json }) => ({
+            ...json,
+            id: json._id
+        }))
+    };
+  },
+
+  getManyReference: async (resource, params) => {
+    const { target, id, pagination, sort, filter } = params;
+    const { page, perPage } = pagination;
+    const { field, order } = sort;
+    
+    const url = `http://localhost:3000/${resource}?${target}=${id}&page=${page}&limit=${perPage}&sortBy=${field}&order=${order}`;
+    
+    const { json, headers } = await httpClient(url);
+    
+    return {
+        data: json.data.map(item => ({
+            ...item,
+            id: item._id
+        })),
+        total: json.total
+    };
   }
 }; 

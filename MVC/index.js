@@ -8,7 +8,7 @@ import { userRouter } from './Routers/UserRouter.js';
 import {EpisodeRouter} from './Routers/EpisodeRouter.js'
 app.use(express.json());
 app.use(cors({
-  exposedHeaders: ['Content-Range']
+ exposedHeaders: ['Content-Range', 'X-Total-Count']
 }));
 config();
 
