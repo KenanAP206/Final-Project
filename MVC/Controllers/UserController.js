@@ -3,14 +3,20 @@ import { UserModel } from '../Models/UserModel.js';
 export const UserController = {
   getList: async (req, res) => {
     try {
-      const { page = 1, perPage = 10 } = req.query;
-      const sort = req.query.sort ? JSON.parse(req.query.sort) : { _id: 1 };
+      const { page = 1, perPage = 10, sortBy, order } = req.query;
       
+      // Create sort object based on sortBy and order parameters
+      const sort = {};
+      if (sortBy && order) {
+        sort[sortBy] = order.toLowerCase() === 'desc' ? -1 : 1;
+      } else {
+        sort._id = 1; // default sorting
+      }
       const users = await UserModel.find()
         .sort(sort)
         .skip((page - 1) * perPage)
         .limit(parseInt(perPage));
-
+      
       const total = await UserModel.countDocuments();
 
       // React Admin için doğru format

@@ -4,6 +4,7 @@ export const route = express.Router();
 
 route.get("/", ShowController.getAll);
 route.get("/:id", ShowController.getById);
-route.delete("/:id", ShowController.deleteShow);
 route.post("/", ShowController.postShow);
 route.put("/:id", ShowController.putShow);
+route.delete("/:id", ShowController.deleteShow);
+route.delete("/", ShowController.deleteMany);

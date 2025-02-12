@@ -1,9 +1,13 @@
 // Pages/Admin/AdminRoot.jsx
 import { Admin, Resource, fetchUtils } from 'react-admin';
-import { UserList } from './UsersPage/Users';
-import Dashboard from './Dashboard';
-import UserEdit from './EditPage/UserEdit';
+import { UserList} from './UsersPage/Users';
+import UserEdit from './EditPage/UserEdit.jsx'
 import UserCreate from './CreatePage/UserCreate';
+import { ShowList } from './ShowsPage/Shows';
+import ShowEdit from './EditPage/ShowsEdit'
+import ShowCreate from './CreatePage/ShowsCreate.jsx'
+import Dashboard from './Dashboard';
+import MovieIcon from '@mui/icons-material/Movie'; // Material UI icon
 
 const httpClient = (url, options = {}) => {
     if (!options.headers) {
@@ -19,7 +23,7 @@ const dataProvider = {
         
         const url = `http://localhost:3000/${resource}?page=${page}&limit=${perPage}&sortBy=${field}&order=${order}`;
         
-        const { json, headers } = await httpClient(url);
+        const { json } = await httpClient(url);
         
         return {
             data: json.data.map(item => ({
@@ -33,27 +37,8 @@ const dataProvider = {
     getOne: async (resource, params) => {
         const url = `http://localhost:3000/${resource}/${params.id}`;
         const { json } = await httpClient(url);
-        
-        return {
-            data: {
-                ...json,
-                id: json._id
-            }
-        };
-    },
-
-    create: async (resource, params) => {
-        const url = `http://localhost:3000/${resource}`;
-        const { json } = await httpClient(url, {
-            method: 'POST',
-            body: JSON.stringify(params.data)
-        });
-
-        return {
-            data: {
-                ...json,
-                id: json._id
-            }
+        return { 
+            data: { ...json.data, id: json.data._id } 
         };
     },
 
@@ -63,12 +48,19 @@ const dataProvider = {
             method: 'PUT',
             body: JSON.stringify(params.data)
         });
+        return { 
+            data: { ...json.data, id: json.data._id } 
+        };
+    },
 
-        return {
-            data: {
-                ...json,
-                id: json._id
-            }
+    create: async (resource, params) => {
+        const url = `http://localhost:3000/${resource}`;
+        const { json } = await httpClient(url, {
+            method: 'POST',
+            body: JSON.stringify(params.data)
+        });
+        return { 
+            data: { ...json.data, id: json.data._id } 
         };
     },
 
@@ -77,22 +69,24 @@ const dataProvider = {
         const { json } = await httpClient(url, {
             method: 'DELETE'
         });
-
-        return {
-            data: json
-        };
+        return { data: json.data };
     },
 
     deleteMany: async (resource, params) => {
-        const { ids } = params;
-        const responses = await Promise.all(
-            ids.map(id => 
-                httpClient(`http://localhost:3000/${resource}/${id}`, {
-                    method: 'DELETE',
-                })
-            )
-        );
-        return { data: responses.map(({ json }) => json.id) };
+        try {
+            const { ids } = params;
+            const response = await httpClient(`http://localhost:3000/${resource}`, {
+                method: 'DELETE',
+                body: JSON.stringify({ ids }), // Send as JSON in request body
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                }),
+            });
+            return { data: ids };
+        } catch (error) {
+            console.error('DeleteMany Error:', error);
+            throw error;
+        }
     },
 
     getMany: async (resource, params) => {
@@ -104,27 +98,9 @@ const dataProvider = {
         );
         return {
             data: responses.map(({ json }) => ({
-                ...json,
-                id: json._id
+                ...json.data,
+                id: json.data._id
             }))
-        };
-    },
-
-    getManyReference: async (resource, params) => {
-        const { target, id, pagination, sort, filter } = params;
-        const { page, perPage } = pagination;
-        const { field, order } = sort;
-        
-        const url = `http://localhost:3000/${resource}?${target}=${id}&page=${page}&limit=${perPage}&sortBy=${field}&order=${order}`;
-        
-        const { json, headers } = await httpClient(url);
-        
-        return {
-            data: json.data.map(item => ({
-                ...item,
-                id: item._id
-            })),
-            total: json.total
         };
     }
 };
@@ -153,6 +129,13 @@ const AdminRoot = () => (
             list={UserList}
             edit={UserEdit}
             create={UserCreate}
+        />
+        <Resource 
+            name="shows" 
+            list={ShowList}
+            edit={ShowEdit}
+            create={ShowCreate}
+            icon={MovieIcon}
         />
     </Admin>
 );

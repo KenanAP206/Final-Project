@@ -8,7 +8,7 @@ function ShowProvider({children}){
     useEffect(()=>{
         axios.get("http://localhost:3000/shows")
         .then(res=>{
-            setShows(res.data)
+            setShows(res.data.data)
             setLoading(false)
         })
     },[])

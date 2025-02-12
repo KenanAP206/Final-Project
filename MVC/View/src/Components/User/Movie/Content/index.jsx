@@ -76,7 +76,7 @@ function index() {
                         <h6><span>Language:</span> {show.language}</h6>
                         <h6><span>Subtitles:</span>  {show.subtitles}</h6>
 
-                        <button onClick={() => handleWatchTrailer('Attack on Titan', "https://www.youtube.com/embed/LV-nazLVmgo" )}><IoPlayOutline /> Play</button>
+                        <button onClick={() => handleWatchTrailer(show.name, show.trailer)}><IoPlayOutline /> Play</button>
 
                     </div>
                     <div className="mcl-right">

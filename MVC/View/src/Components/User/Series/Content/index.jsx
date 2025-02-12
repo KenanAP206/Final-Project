@@ -158,7 +158,7 @@ function Index() {
             <h6><span>Language:</span> {show.language}</h6>
             <h6><span>Subtitles:</span>  {show.subtitles}</h6>
 
-            <button onClick={() => handleWatchTrailer('Attack on Titan', "https://www.youtube.com/embed/LV-nazLVmgo")}>
+            <button onClick={() => handleWatchTrailer(show.name, show.trailer)}>
               <IoPlayOutline /> Play
             </button>
           </div>

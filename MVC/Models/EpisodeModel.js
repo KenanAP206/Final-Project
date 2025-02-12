@@ -1,16 +1,21 @@
-import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
+const EpisodeSchema = new mongoose.Schema({
+    link: String,
+    showId: mongoose.Schema.Types.ObjectId,
+    isNew: Boolean,
+    order: Number,
+    createdAt: { type: Date, default: Date.now }
+});
 
-const EpisodeSchema = new Schema({
-    link:{
-        type:String,
-    },
-    isNew:Boolean,
-    showId:{
-        type: Schema.Types.ObjectId,
-        ref: "shows"
+EpisodeSchema.pre('save', function(next) {
+    if (this.createdAt) {
+        const hoursSinceCreation = (Date.now() - this.createdAt.getTime()) / (1000 * 60 * 60);
+        if (hoursSinceCreation >= 24) {
+            this.isNew = false;
+        }
     }
-    
-})
+    next();
+});
 
-export let EpisodeModel = model('episodes', EpisodeSchema);
+export const EpisodeModel = mongoose.model('Episode', EpisodeSchema);
