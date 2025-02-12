@@ -6,25 +6,26 @@ import {
     BooleanInput,
     SelectInput,
     required,
+    ImageField,
     useRecordContext
 } from 'react-admin';
 import { Box, Typography } from '@mui/material';
 
 const ImagePreview = ({ record }) => {
     if (!record || !record.image) return null;
-    
+
     return (
         <Box mt={2} mb={2}>
-            <img 
-                src={record.image} 
-                alt="Preview" 
-                style={{ 
-                    maxWidth: '300px', 
-                    maxHeight: '300px', 
+            <img
+                src={record.image}
+                alt="Preview"
+                style={{
+                    maxWidth: '300px',
+                    maxHeight: '300px',
                     objectFit: 'contain',
                     borderRadius: '4px',
                     boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }} 
+                }}
             />
         </Box>
     );
@@ -32,52 +33,81 @@ const ImagePreview = ({ record }) => {
 
 const ShowCreate = () => {
     const record = useRecordContext();
-    
+
     return (
         <Create>
             <SimpleForm>
+       
                 <TextInput source="name" validate={required()} fullWidth />
                 <TextInput source="desc" multiline rows={4} fullWidth />
                 <NumberInput source="year" validate={required()} />
-                <SelectInput 
-                    source="type" 
+                <SelectInput
+                    source="type"
                     choices={[
-                        { id: 'movie', name: 'Movie' },
-                        { id: 'series', name: 'Series' }
+                        { id: 'Movie', name: 'Movie' },
+                        { id: 'Series', name: 'Series' }
                     ]}
                     validate={required()}
                 />
-                <TextInput source="sort" />
+                <SelectInput
+                    source="sort"
+                    choices={[
+                        { id: 'Tv series', name: 'TV Series' },
+                        { id: 'Movie', name: 'Movie' },
+                        { id: 'OVA', name: 'OVA' },
+                        { id: 'Special', name: 'Special' },
+                        { id: 'ONA', name: 'ONA' }
+                    ]}
+                    validate={required()}
+                />
                 <TextInput source="age_rating" />
                 <TextInput source="quality" />
-                <TextInput source="category" />
+                <SelectInput
+                    source="category"
+                    choices={[
+                        { id: 'Action', name: 'Action' },
+                        { id: 'Adventure', name: 'Adventure' },
+                        { id: 'Comedy', name: 'Comedy' },
+                        { id: 'Drama', name: 'Drama' },
+                        { id: 'Fantasy', name: 'Fantasy' },
+                        { id: 'Horror', name: 'Horror' },
+                        { id: 'Mystery', name: 'Mystery' }
+                    ]}
+                    validate={required()}
+                />
                 <TextInput source="duration" />
                 <TextInput source="staring" />
                 <TextInput source="language" />
                 <TextInput source="subtitles" />
                 <NumberInput source="date_aired" />
                 <TextInput source="director" />
-                <BooleanInput source="premium" defaultValue={false} />
-                <NumberInput source="rating" min={0} max={10} step={0.1} defaultValue={0} />
-                <NumberInput source="views" defaultValue={0} />
+                <BooleanInput source="premium" />
+                <NumberInput source="rating" min={0} max={10} step={0.1} />
+                <NumberInput source="views" />
                 <TextInput source="country" />
                 <TextInput source="genre" />
-                <TextInput source="premiered" />
-                
-                <Box mt={2} mb={2}>
-                    <Typography variant="subtitle1">Image Preview:</Typography>
-                    <ImagePreview record={record} />
-                </Box>
-                
-                <TextInput 
-                    source="image" 
-                    fullWidth 
-                    helperText="Enter image URL"
-                />
-                <TextInput source="trailer" fullWidth />
-                <BooleanInput source="isNew" defaultValue={true} />
-            </SimpleForm>
-        </Create>
+                <SelectInput
+                    source="premiered"
+                    choices={[
+                        { id: 'Winter', name: 'Winter' },
+                        { id: 'Spring', name: 'Spring' },
+                        { id: 'Summer', name: 'Summer' },
+                        { id: 'Fall', name: 'Fall' }
+                    ]}
+                    validate={required()}/>
+           
+            
+
+         
+            <TextInput
+                source="image"
+                fullWidth
+                helperText="Enter image URL"
+            />
+            <TextInput source="trailer" fullWidth />
+            <BooleanInput source="isNew" defaultValue={true} />
+        </SimpleForm>
+        </Create >
     );
 };
 

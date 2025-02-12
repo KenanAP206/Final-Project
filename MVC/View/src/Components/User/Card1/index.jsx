@@ -6,7 +6,7 @@ import { FaStar } from "react-icons/fa";
 
 function index(props) {
   const navigateTo = () => {
-    if (props.type === "movie") {
+    if (props.type === "Movie") {
 
       return `/movie/${props.id}`;
     } else {

@@ -5,7 +5,7 @@ import { Edit as EditIcon, Save as SaveIcon, Cancel as CancelIcon, DragIndicator
 import { IconButton } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const EpisodeList = () => {
+const EpisodeList = ({ maxEpisodes }) => {
     const [episodes, setEpisodes] = useState([]);
     const [newEpisode, setNewEpisode] = useState({ link: '', isNew: false });
     const notify = useNotify();
@@ -64,6 +64,12 @@ const EpisodeList = () => {
             return;
         }
 
+        // Check if we've reached the episode limit for movies
+        if (maxEpisodes && episodes.length >= maxEpisodes) {
+            notify('Cannot add more episodes. Maximum limit reached.', { type: 'warning' });
+            return;
+        }
+
         try {
             const response = await fetch('http://localhost:3000/episodes', {
                 method: 'POST',
@@ -73,7 +79,7 @@ const EpisodeList = () => {
                 body: JSON.stringify({
                     ...newEpisode,
                     showId: record.id,
-                    order: orderedEpisodes.length + 1 // Yeni bölüm için sıra numarası eklendi
+                    order: orderedEpisodes.length + 1
                 }),
             });
 
@@ -126,31 +132,33 @@ const EpisodeList = () => {
 
     return (
         <Box mt={2}>
-            {/* Replace form with Box */}
-            <Box sx={{ marginBottom: '1rem' }}>
-                <TextField
-                    label="Episode Link"
-                    value={newEpisode.link}
-                    onChange={(e) => setNewEpisode(prev => ({ ...prev, link: e.target.value }))}
-                    fullWidth
-                    margin="normal"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={newEpisode.isNew}
-                            onChange={(e) => setNewEpisode(prev => ({ ...prev, isNew: e.target.checked }))}
-                        />
-                    }
-                    label="Is New Episode"
-                />
-                <Button
-                    onClick={handleAddEpisode}
-                    label="Add Episode"
-                    variant="contained"
-                    color="primary"
-                />
-            </Box>
+            {/* Only show the add episode form if we haven't reached the limit */}
+            {(!maxEpisodes || episodes.length < maxEpisodes) && (
+                <Box sx={{ marginBottom: '1rem' }}>
+                    <TextField
+                        label="Episode Link"
+                        value={newEpisode.link}
+                        onChange={(e) => setNewEpisode(prev => ({ ...prev, link: e.target.value }))}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={newEpisode.isNew}
+                                onChange={(e) => setNewEpisode(prev => ({ ...prev, isNew: e.target.checked }))}
+                            />
+                        }
+                        label="Is New Episode"
+                    />
+                    <Button
+                        onClick={handleAddEpisode}
+                        label="Add Episode"
+                        variant="contained"
+                        color="primary"
+                    />
+                </Box>
+            )}
 
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="episodes">

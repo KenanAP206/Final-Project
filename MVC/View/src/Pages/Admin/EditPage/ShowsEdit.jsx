@@ -7,31 +7,91 @@ import {
     SelectInput,
     required,
     ImageInput,
-    ImageField
+    ImageField,
+    useRecordContext,
+    SelectArrayInput
 } from 'react-admin';
 import EpisodeList from '../ShowsPage/EpisodeList';
+const roleChoices = [
+    { id: 'Action', name: 'Action' },
+    { id: 'Adventure', name: 'Adventure' },
+    { id: 'Comedy', name: 'Comedy' },
+    { id: 'Drama', name: 'Drama' },
+    { id: 'Fantasy', name: 'Fantasy' },
+    { id: 'Horror', name: 'Horror' },
+    { id: 'Shonen', name: 'Shonen' },
+    { id: 'Mystery', name: 'Mystery' },
+    { id: 'Sci-Fi', name: 'Sci-Fi' },
+    { id: 'Slice of Life', name: 'Slice of Life' },
+    { id: 'Psychological', name: 'Psychological' },
+    { id: 'Mecha', name: 'Mecha' },
+    { id: 'Romance', name: 'Romance' },
+    { id: 'Thriller', name: 'Thriller' },
+    { id: 'Supernatural', name: 'Supernatural' },
+    { id: 'Sports', name: 'Sports' },
+    { id: 'Historical', name: 'Historical' },
+    { id: 'Martial Arts', name: 'Martial Arts' }
+];
+// Create a new component for the episodes section
+const EpisodesSection = () => {
+    const record = useRecordContext();
+
+    if (!record) return null;
+
+    return (
+        <div style={{ marginTop: '2rem', borderTop: '1px solid #ccc', paddingTop: '1rem' }}>
+            <h3>Episodes</h3>
+            {record.type === 'movie' ? (
+                <div>
+                    <p style={{ color: '#666' }}>Movies can only have one episode.</p>
+                    <EpisodeList maxEpisodes={1} />
+                </div>
+            ) : (
+                <EpisodeList />
+            )}
+        </div>
+    );
+};
 
 const ShowEdit = () => (
     <Edit>
         <SimpleForm>
-            {/* Mevcut resmi göster */}
+
             <ImageField source="image" title="name" sx={{ '& img': { maxWidth: 200 } }} />
-            
+
             <TextInput source="name" validate={required()} fullWidth />
             <TextInput source="desc" multiline rows={4} fullWidth />
             <NumberInput source="year" validate={required()} />
-            <SelectInput 
-                source="type" 
+            <SelectInput
+                source="type"
                 choices={[
-                    { id: 'movie', name: 'Movie' },
-                    { id: 'series', name: 'Series' }
+                    { id: 'Movie', name: 'Movie' },
+                    { id: 'Series', name: 'Series' }
                 ]}
                 validate={required()}
             />
-            <TextInput source="sort" />
+            <SelectInput source="sort"
+                choices={[
+                    { id: 'TV Series', name: 'TV Series' },
+                    { id: 'Movie', name: 'Movie' },
+                    { id: 'OVA', name: 'OVA' },
+                    { id: 'Special', name: 'Special' },
+                    { id: 'ONA', name: 'ONA' }
+                ]}
+                validate={required()} />
             <TextInput source="age_rating" />
             <TextInput source="quality" />
-            <TextInput source="category" />
+            <SelectInput source="category"
+                choices={[
+                    { id: 'Action', name: 'Action' },
+                    { id: 'Adventure', name: 'Adventure' },
+                    { id: 'Comedy', name: 'Comedy' },
+                    { id: 'Drama', name: 'Drama' },
+                    { id: 'Fantasy', name: 'Fantasy' },
+                    { id: 'Horror', name: 'Horror' },
+                    { id: 'Mystery', name: 'Mystery' }
+                ]}
+                validate={required()} />
             <TextInput source="duration" />
             <TextInput source="staring" />
             <TextInput source="language" />
@@ -42,17 +102,21 @@ const ShowEdit = () => (
             <NumberInput source="rating" min={0} max={10} step={0.1} />
             <NumberInput source="views" />
             <TextInput source="country" />
-            <TextInput source="genre" />
-            <TextInput source="premiered" />
+            <SelectArrayInput source="genre" choices={roleChoices} />
+            <SelectInput source="premiered"
+                choices={[
+                    { id: 'Winter', name: 'Winter' },
+                    { id: 'Spring', name: 'Spring' },
+                    { id: 'Summer', name: 'Summer' },
+                    { id: 'Fall', name: 'Fall' },
+                ]}
+                validate={required()} />
             <TextInput source="image" fullWidth helperText="Enter image URL" />
             <TextInput source="trailer" fullWidth />
             <BooleanInput source="isNew" />
 
-            {/* Episodes section */}
-            <div style={{ marginTop: '2rem', borderTop: '1px solid #ccc', paddingTop: '1rem' }}>
-                <h3>Episodes</h3>
-                <EpisodeList />
-            </div>
+            {/* Replace the old episodes section with the new component */}
+            <EpisodesSection />
         </SimpleForm>
     </Edit>
 );

@@ -19,7 +19,7 @@ let ShowSchema = new Schema({
   rating: Number,
   views: Number,
   country:String,
-  genre:String,
+  genre: [String],
   premiered:String,
   image: String,
   trailer: String,
