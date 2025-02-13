@@ -24,6 +24,7 @@
     "adminjs": "^7.8.15",
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
+    "disqus-react": "^1.1.5",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "lucide-react": "^0.475.0",
