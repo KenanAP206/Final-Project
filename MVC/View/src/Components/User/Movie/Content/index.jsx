@@ -5,6 +5,7 @@ import './Content.css'
 import { FaStar } from "react-icons/fa";
 import { IoEye } from "react-icons/io5";
 import { IoPlayOutline, IoClose } from "react-icons/io5";
+import LoadingPage from '../../Loading/index'
 function index() {
     const { id } = useParams();
     const [show, setShow] = useState(null);
@@ -53,7 +54,7 @@ function index() {
     }, [id]);
 
  
-    if (!show) return <div>Loading...</div>;
+    if (!show) return <div><LoadingPage/></div>;
 
     return (
         <div>

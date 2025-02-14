@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import "./Content.css";
 import { FaStar } from "react-icons/fa";
 import { IoEye, IoPlayOutline, IoClose } from "react-icons/io5";
+import LoadingPage from '../../Loading/index'
 function Index() {
   const { id } = useParams();
   const [show, setShow] = useState(null);
@@ -53,7 +54,7 @@ function Index() {
     fetchShow();
   }, [id]);
 
-  if (!show) return <div>Loading...</div>;
+  if (!show) return <div><LoadingPage/></div>;
 
 
   const handleEpisodeClick = (ep) => {

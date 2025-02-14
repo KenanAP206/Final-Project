@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Shows.css";
 import Card from '../../../Components/User/Card1'
 import { CiFilter } from "react-icons/ci";
@@ -19,7 +19,8 @@ import {
   useId
 } from '@floating-ui/react';
 import { IoChevronDown } from "react-icons/io5";
-
+import LoadingPage from '../../../Components/User/Loading/index'
+import axios from 'axios'
 
 const data = [
   { id: 1, genre:'Action', type:'Movie',name: "Your Name", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-15.png" },
@@ -172,6 +173,27 @@ const Pagination = () => {
         </div>
       );
     };
+
+      const [isLoading, setIsLoading] = useState(true);
+  const [shows, setShows] = useState([]); 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/shows'); 
+        setShows(response.data); 
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false); 
+      }
+    };
+
+    fetchData();
+  }, []); 
+  
+  if (isLoading) return <div><LoadingPage/></div>;
+
 
     return (
     <div className="shows-filterbar">
