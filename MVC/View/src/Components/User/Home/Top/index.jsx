@@ -9,8 +9,9 @@ import { useContext } from 'react';
 function index() {
       let {shows,loading}=useContext(showContext)
       const filteredShows = shows ? shows.filter(show => show.rating > 4) : [];
-      console.log(filteredShows);
+
 function SampleNextArrow(props) {
+
     const { className, style, onClick } = props;
     return (
       <div

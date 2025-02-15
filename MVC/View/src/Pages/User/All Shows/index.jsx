@@ -66,6 +66,7 @@ const Pagination = () => {
       status: [],
       season: []
     });
+    
 
     const filterOptions = {
       genre: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery'],
@@ -174,25 +175,26 @@ const Pagination = () => {
       );
     };
 
-      const [isLoading, setIsLoading] = useState(true);
-  const [shows, setShows] = useState([]); 
+   
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('http://localhost:3000/shows'); 
+          setShows(response.data); 
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setIsLoading(false); 
+        }
+      };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/shows'); 
-        setShows(response.data); 
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false); 
-      }
-    };
+      fetchData();
+    }, []); 
+    const [isLoading, setIsLoading] = useState(true);
+    const [shows, setShows] = useState([]); 
 
-    fetchData();
-  }, []); 
-  
-  if (isLoading) return <div><LoadingPage/></div>;
+    if (isLoading) return <div><LoadingPage/></div>;
+
 
 
     return (
@@ -292,6 +294,7 @@ const Pagination = () => {
     </div>
     );
   };
+
 
   return (
     <section id="shows">
