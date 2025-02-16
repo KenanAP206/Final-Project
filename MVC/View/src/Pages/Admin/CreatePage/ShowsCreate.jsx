@@ -61,7 +61,12 @@ const ShowCreate = () => {
                     validate={required()}
                 />
                 <TextInput source="age_rating" />
-                <TextInput source="quality" />
+                <SelectInput source="quality"
+                choices={[
+                    { id: 'SD', name: 'SD' },
+                    { id: 'HD', name: 'HD' }
+                ]}
+                validate={required()} />
                 <SelectInput
                     source="category"
                     choices={[
@@ -82,7 +87,7 @@ const ShowCreate = () => {
                 <NumberInput source="date_aired" />
                 <TextInput source="director" />
                 <BooleanInput source="premium" />
-                <NumberInput source="rating" min={0} max={10} step={0.1} />
+                <NumberInput source="rating" min={0} max={5} step={0.1} />
                 <NumberInput source="views" />
                 <TextInput source="country" />
                 <TextInput source="genre" />
