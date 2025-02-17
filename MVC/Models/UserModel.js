@@ -1,9 +1,11 @@
 import { Schema, model } from 'mongoose';
 
 let UserSchema = new Schema({
-  name: { type: String, required: true },
+  username: { type: String, required: true },
+  image: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  confirmPassword:Number,
   role: { 
     type: String, 
     enum: ['admin', 'user', 'editor'],

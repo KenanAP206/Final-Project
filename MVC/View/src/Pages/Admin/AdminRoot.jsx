@@ -106,12 +106,29 @@ const dataProvider = {
 };
 
 const authProvider = {
-    login: () => Promise.resolve(),
+    login: async ({ username, password }) => {
+        const request = new Request('http://localhost:3000/login', {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            headers: new Headers({ 'Content-Type': 'application/json' }),
+        });
+        const response = await fetch(request);
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error('Giriş başarısız');
+        }
+        return Promise.resolve();
+    },
     logout: () => {
         return Promise.resolve();
     },
     checkError: () => Promise.resolve(),
-    checkAuth: () => Promise.resolve(),
+    checkAuth: async () => {
+        const response = await fetch('http://localhost:3000/check-auth');
+        if (response.status === 401) {
+            throw new Error('Oturum açılmadı');
+        }
+        return Promise.resolve();
+    },
     getPermissions: () => Promise.resolve(),
     getLoginUrl: () => '/login',
     getDashboardUrl: () => '/admin'

@@ -6,7 +6,7 @@ const UserList = ({ users }) => {
     <List>
       {users && users.map(user => (
         <ListItem key={user.id}>
-          <ListItemText primary={user.name} secondary={user.email} />
+          <ListItemText primary={user.username} secondary={user.email} />
         </ListItem>
       ))}
     </List>

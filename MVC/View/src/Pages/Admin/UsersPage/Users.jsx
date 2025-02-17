@@ -30,11 +30,11 @@ export const UserList = () => (
     <List 
         pagination={<PostPagination />}
         perPage={10}
-        sort={{ field: 'name', order: 'ASC' }}
+        sort={{ field: 'username', order: 'ASC' }}
     >
         <Datagrid bulkActionButtons={<PostBulkActionButtons />}>
             <TextField source="id" />
-            <TextField source="name" />
+            <TextField source="username" />
             <EmailField source="email" />
             <TextField source="role" />
             <EditButton />
@@ -48,7 +48,7 @@ export const UserEdit = () => (
     <Edit>
         <SimpleForm>
             <TextInput disabled source="id" />
-            <TextInput source="name" />
+            <TextInput source="username" />
             <TextInput source="email" />
             <TextInput source="role" />
         </SimpleForm>
@@ -59,7 +59,7 @@ export const UserEdit = () => (
 export const UserCreate = () => (
     <Create>
         <SimpleForm>
-            <TextInput source="name" />
+            <TextInput source="username" />
             <TextInput source="email" />
             <TextInput source="password" />
             <TextInput source="role" />

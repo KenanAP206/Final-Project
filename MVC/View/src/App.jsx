@@ -7,8 +7,6 @@ import AllShows from './Pages/User/All Shows'
 import Blog from './Pages/User/Blog'
 import Contact from './Pages/User/Contact'
 import Movie from './Pages/User/Movie'
-import Login from './Pages/User/Login'
-import Register from './Pages/User/Register'
 import Payment from './Pages/User/Payment'
 import Profile from './Pages/User/Profile'
 import NotFound from './Pages/User/NotFound';
@@ -16,6 +14,8 @@ import UserRoot from './Pages/User/UserRoot';
 import AdminRoot from './Pages/Admin/AdminRoot'
 import Dashboard from './Pages/Admin/Dashboard/index'
 import Users from './Pages/Admin/UsersPage/Users'
+import UserLogin from './Pages/User/UserLogin'
+import UserRegister from './Pages/User/UserRegister'
 function App() {
   return (
     <>
@@ -27,10 +27,10 @@ function App() {
           <Route path='allshows' element={<AllShows />} />
           <Route path='blog' element={<Blog />} />
           <Route path='contact' element={<Contact />} />
-          <Route path='login' element={<Login />} />
-          <Route path='register' element={<Register />} />
           <Route path='profile' element={<Profile />} />
           <Route path='payment' element={<Payment />} />
+          <Route path='login' element={<UserLogin />} />
+          <Route path='register' element={<UserRegister />} />
           <Route path='*' element={<NotFound />} />
         </Route>
      

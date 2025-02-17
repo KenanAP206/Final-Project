@@ -1,40 +1,27 @@
 import { UserModel } from '../Models/UserModel.js';
+import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+
+const secretKey = "SECRETKEY";
+
+const transporter = nodemailer.createTransport({
+    direct: true,
+    host: "smtp.gmail.com",
+    port: 465,
+    auth: {
+      user:"kanansk-af206@code.edu.az",
+      pass:"dkes xrvd ebqj oidz"
+    },
+    secure: true,
+});
 
 export const UserController = {
   getList: async (req, res) => {
     try {
-      const { page = 1, perPage = 10, sortBy, order } = req.query;
-      
-    
-      const sort = {};
-      if (sortBy && order) {
-        sort[sortBy] = order.toLowerCase() === 'desc' ? -1 : 1;
-      } else {
-        sort._id = 1; // default sorting
-      }
-      const users = await UserModel.find()
-        .sort(sort)
-        .skip((page - 1) * perPage)
-        .limit(parseInt(perPage));
-      
-      const total = await UserModel.countDocuments();
-
-      // React Admin için doğru format
-      const formattedUsers = users.map(user => ({
-        ...user.toObject(),
-        id: user._id
-      }));
-
-      // Content-Range header'ını ekle
-      res.set('Content-Range', `users ${(page - 1) * perPage}-${page * perPage}/${total}`);
-      res.set('Access-Control-Expose-Headers', 'Content-Range');
-      
-      res.json({
-        data: formattedUsers,
-        total: total
-      });
+      const users = await UserModel.find();
+      res.json({ data: users, total: users.length });
     } catch (error) {
-      console.error('GetList Error:', error);
       res.status(500).json({ error: error.message });
     }
   },
@@ -156,5 +143,68 @@ export const UserController = {
         })),
         total: json.total
     };
-  }
+  },
+
+  register: async (req, res) => {
+    const { email, username, password } = req.body;
+    const user = await UserModel.find({ email: email });
+    if (user.length !== 0) {
+      return res.send("Bu User sistemde var");
+    } else {
+      let hashpassword = await bcrypt.hash(password, 10);
+      let newUser = new UserModel({
+        username,
+        password: hashpassword,
+        email
+      });
+
+      await newUser.save();
+      res.send(newUser);
+    }
+  },
+
+  login: async (req, res) => {
+    let { email, password } = req.body;
+    const user = await UserModel.findOne({ email: email });
+    if (!user) {
+      return res.send("Register olmamisiniz");
+    } else {
+      let isTruePassword = await bcrypt.compare(password, user.password);
+      if (!isTruePassword) {
+        return res.send("Password dogru deyildir");
+      } else {
+        let confirmCode = Math.floor(Math.random() * 999999);
+        user.confirmPassword = confirmCode;
+        await user.save();
+
+        const info = await transporter.sendMail({
+          to: user.email,
+          subject: "Hello ✔",
+          text: "Hello world?",
+          html: `<h1 style="color:red">Bu sizin confirm kodunuzdur ${confirmCode}</h1>`,
+        });
+      }
+      res.send(user);
+    }
+  },
+
+  confirm: async (req, res) => {
+    let confirmPassword = req.body.confirmPassword;
+    let user = await UserModel.findOne({ confirmPassword: confirmPassword });
+    if (!user) {
+      res.send("Sizin confirm password yalnisdir");
+    } else {
+      let token = jwt.sign({ userId: user._id, email: user.email }, secretKey, { expiresIn: "1h" });
+      res.send(token);
+    }
+  },
+
+  checkAuth: async (req, res) => {
+    // Kullanıcının oturum açıp açmadığını kontrol et
+    if (req.isAuthenticated()) { // Eğer oturum açmışsa
+        return res.status(200).json({ authenticated: true });
+    } else {
+        return res.status(401).json({ authenticated: false });
+    }
+  },
 }; 

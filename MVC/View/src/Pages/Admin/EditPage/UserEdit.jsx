@@ -17,7 +17,7 @@ const UserEdit = () => (
                 <SimpleForm>
                     <TextInput disabled source="id" />
                     <TextInput 
-                        source="name" 
+                        source="username" 
                         validate={required()} 
                         fullWidth
                     />

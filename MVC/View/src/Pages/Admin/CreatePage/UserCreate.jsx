@@ -16,7 +16,7 @@ const UserCreate = () => (
             <CardContent>
                 <SimpleForm>
                     <TextInput 
-                        source="name" 
+                        source="username" 
                         validate={required()} 
                         fullWidth
                     />
