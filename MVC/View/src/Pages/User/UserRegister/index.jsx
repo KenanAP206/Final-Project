@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { NavLink } from 'react-router';
+import { NavLink, useNavigate } from 'react-router';
 import axios from 'axios';
-
 const RegisterSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -11,7 +10,7 @@ const RegisterSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
     .required('Password confirmation is required'),
-  confirmationCode: Yup.string().when('isConfirmed', {
+  confirmationCode: Yup.number().when('isConfirmed', {
     is: true,
     then: Yup.string().required('Confirmation code is required'),
   }),
@@ -20,12 +19,12 @@ const RegisterSchema = Yup.object().shape({
 function Register() {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState('');
-
+  const navigate = useNavigate()
   const handleRegister = async (values) => {
     try {
       const response = await axios.post('http://localhost:3000/users/register', values);
       console.log('Registration successful:', response.data);
-      setIsConfirmed(true); // Show confirmation input after successful registration
+      setIsConfirmed(true);
     } catch (error) {
       console.error('Registration error:', error.response ? error.response.data : error.message);
     }
@@ -35,9 +34,11 @@ function Register() {
     try {
       const response = await axios.post('http://localhost:3000/users/confirm', { confirmPassword: confirmationCode });
       console.log('Confirmation successful:', response.data);
+      navigate('/login');
       // Handle successful confirmation (e.g., redirect user to login)
     } catch (error) {
       console.error('Confirmation error:', error.response ? error.response.data : error.message);
+     
     }
   };
 
@@ -49,7 +50,7 @@ function Register() {
         validationSchema={RegisterSchema}
         onSubmit={handleRegister}
       >
-        {({ values }) => (
+        {({ values, setFieldValue }) => (
           <Form>
             <div className="form-group">
               <label htmlFor="username">Username</label>
@@ -75,10 +76,17 @@ function Register() {
 
             {isConfirmed && (
               <div className="form-group">
-                <label htmlFor="confirmationCode">Confirmation Code</label>
-                <Field name="confirmationCode" type="number" onChange={(e) => setConfirmationCode(e.target.value)} />
+                <label htmlFor="confirmationCode">Onay Kodu</label>
+                <Field
+                  name="confirmationCode"
+                  type="number"
+                  onChange={(e) => {
+                    setFieldValue('confirmationCode', e.target.value);
+                    setConfirmationCode(e.target.value);
+                  }}
+                />
                 <ErrorMessage name="confirmationCode" component="div" className="error" />
-                <button type="button" onClick={handleConfirm}>Confirm</button>
+                <button type="button" onClick={handleConfirm}>Onayla</button>
               </div>
             )}
 

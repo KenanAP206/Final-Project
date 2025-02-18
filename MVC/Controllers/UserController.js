@@ -151,13 +151,20 @@ export const UserController = {
       return res.send("Bu User sistemde var");
     } else {
       let hashpassword = await bcrypt.hash(password, 10);
+      let confirmCode = Math.floor(Math.random() * 999999);
       let newUser = new UserModel({
         username,
         password: hashpassword,
-        email
+        email,
+        confirmPassword: confirmCode
       });
 
       await newUser.save();
+      await transporter.sendMail({
+        to: email,
+        subject: "Onay Kodu",
+        text: `Onay kodunuz: ${confirmCode}`,
+      });
       res.send(newUser);
     }
   },
@@ -193,8 +200,8 @@ export const UserController = {
     if (!user) {
       res.send("Sizin confirm password yalnisdir");
     } else {
-      let token = jwt.sign({ userId: user._id, email: user.email }, secretKey, { expiresIn: "1h" });
-      res.send(token);
+      let token = jwt.sign({ userId: user._id, email: user.email }, secretKey, { expiresIn: "2d" });
+      res.send({ token });
     }
   },
 

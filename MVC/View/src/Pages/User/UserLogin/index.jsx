@@ -21,7 +21,8 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:3000/users/login', values);
       console.log('Login successful:', response.data);
-      setIsConfirmed(true); // Show confirmation input after successful login
+      setIsConfirmed(true);
+
     } catch (error) {
       console.error('Login error:', error.response ? error.response.data : error.message);
     }
@@ -31,7 +32,7 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:3000/users/confirm', { confirmPassword: confirmationCode });
       console.log('Confirmation successful:', response.data);
-      // Handle successful confirmation (e.g., redirect user to dashboard)
+      localStorage.setItem('token', response.data.token);
     } catch (error) {
       console.error('Confirmation error:', error.response ? error.response.data : error.message);
     }
@@ -45,7 +46,7 @@ function Login() {
         validationSchema={LoginSchema}
         onSubmit={handleLogin}
       >
-        {() => (
+        {({values, setFieldValue}) => (
           <Form>
             <div className="form-group">
               <label htmlFor="email">Email</label>
@@ -61,10 +62,17 @@ function Login() {
 
             {isConfirmed && (
               <div className="form-group">
-                <label htmlFor="confirmationCode">Confirmation Code</label>
-                <Field name="confirmationCode" type="number" />
+                <label htmlFor="confirmationCode">Onay Kodu</label>
+                <Field
+                  name="confirmationCode"
+                  type="text"
+                  onChange={(e) => {
+                    setFieldValue('confirmationCode', e.target.value);
+                    setConfirmationCode(e.target.value);
+                  }}
+                />
                 <ErrorMessage name="confirmationCode" component="div" className="error" />
-                <button type="button" onClick={handleConfirm} disabled={!confirmationCode}>Confirm</button>
+                <button type="button" onClick={handleConfirm}>Onayla</button>
               </div>
             )}
 
