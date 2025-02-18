@@ -46,9 +46,9 @@ export const UserController = {
 
   create: async (req, res) => {
     try {
-      const user = new UserModel(req.body);
+      const hashpassword = await bcrypt.hash(req.body.password, 10);
+      const user = new UserModel({ ...req.body, password: hashpassword });      
       const savedUser = await user.save();
-      // React Admin için doğru format
       const formattedUser = {
         ...savedUser.toObject(),
         id: savedUser._id
@@ -70,7 +70,6 @@ export const UserController = {
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      // React Admin için doğru format
       const formattedUser = {
         ...user.toObject(),
         id: user._id
@@ -88,7 +87,6 @@ export const UserController = {
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      // React Admin için doğru format
       const formattedUser = {
         ...user.toObject(),
         id: user._id
@@ -100,16 +98,17 @@ export const UserController = {
     }
   },
 
-  deleteMany: async (resource, params) => {
-    const { ids } = params;
-    const responses = await Promise.all(
-        ids.map(id => 
-            httpClient(`http://localhost:3000/${resource}/${id}`, {
-                method: 'DELETE',
-            })
-        )
-    );
-    return { data: responses.map(({ json }) => json.id) };
+  deleteMany: async (req, res) => {
+    const { ids } = req.body; 
+    try {
+        const responses = await Promise.all(
+            ids.map(id => UserModel.findByIdAndDelete(id)) 
+        );
+        res.json({ data: responses.map(user => user._id) });
+    } catch (error) {
+        console.error('DeleteMany Error:', error);
+        res.status(500).json({ error: error.message }); 
+    }
   },
 
   getMany: async (resource, params) => {
@@ -200,11 +199,33 @@ export const UserController = {
   },
 
   checkAuth: async (req, res) => {
-    // Kullanıcının oturum açıp açmadığını kontrol et
-    if (req.isAuthenticated()) { // Eğer oturum açmışsa
+    if (req.isAuthenticated()) { 
         return res.status(200).json({ authenticated: true });
     } else {
         return res.status(401).json({ authenticated: false });
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    try {
+      const hashPassword = await bcrypt.hash(newPassword, 10);
+      const user = await UserModel.findByIdAndUpdate(
+        id,
+        { password: hashPassword },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      res.json({ message: 'Password reset successfully', data: { id: user._id } });
+    } catch (error) {
+      console.error('ResetPassword Error:', error);
+      res.status(500).json({ error: error.message });
     }
   },
 }; 

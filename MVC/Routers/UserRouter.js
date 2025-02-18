@@ -28,4 +28,10 @@ userRouter.delete("/:id", UserController.delete);
 userRouter.delete("/", UserController.deleteMany);
 
 // Kullanıcı oturum kontrolü
-userRouter.get("/check-auth", UserController.checkAuth); 
+userRouter.get("/check-auth", UserController.checkAuth);
+
+// Kullanıcı oluşturma
+userRouter.post("/", UserController.create);
+
+// Kullanıcı şifresini sıfırlama
+userRouter.put("/:id/reset-password", UserController.resetPassword); 
