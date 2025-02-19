@@ -13,7 +13,6 @@ import NotFound from './Pages/User/NotFound';
 import UserRoot from './Pages/User/UserRoot';
 import AdminRoot from './Pages/Admin/AdminRoot'
 import Dashboard from './Pages/Admin/Dashboard/index'
-import Users from './Pages/Admin/UsersPage/Users'
 import UserLogin from './Pages/User/UserLogin'
 import UserRegister from './Pages/User/UserRegister'
 function App() {
@@ -36,7 +35,6 @@ function App() {
      
         <Route path='/admin/*' element={<AdminRoot />}>
           <Route index element={<Dashboard />} />
-          <Route path='users' element={<Users />} />
         </Route>
 
       </Routes>

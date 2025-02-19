@@ -19,10 +19,11 @@ function Login() {
 
   const handleLogin = async (values) => {
     try {
-      const response = await axios.post('http://localhost:3000/users/login', values);
+      const response = await axios.post('http://localhost:3000/users/login', values, {
+        withCredentials: true
+      });
       console.log('Login successful:', response.data);
       setIsConfirmed(true);
-
     } catch (error) {
       console.error('Login error:', error.response ? error.response.data : error.message);
     }
@@ -30,9 +31,15 @@ function Login() {
 
   const handleConfirm = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/confirm', { confirmPassword: confirmationCode });
+      const response = await axios.post('http://localhost:3000/users/confirm', 
+        { confirmPassword: confirmationCode },
+        { withCredentials: true }
+      );
       console.log('Confirmation successful:', response.data);
-      localStorage.setItem('token', response.data.token);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        window.location.href = '/profile';
+      }
     } catch (error) {
       console.error('Confirmation error:', error.response ? error.response.data : error.message);
     }
@@ -78,7 +85,7 @@ function Login() {
 
             <div className="form-links">
               <NavLink to='/register'>You don't have an account?</NavLink>
-              <NavLink>Reset password</NavLink>
+   
             </div>
           </Form>
         )}

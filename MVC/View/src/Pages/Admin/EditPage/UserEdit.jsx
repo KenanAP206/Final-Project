@@ -34,6 +34,7 @@ const UserEdit = () => {
     };
 
     const handleSubmit = async () => {
+        const token = localStorage.getItem('token');
         if (!newPassword) {
             notify("Please enter new password.", { type: 'warning' });
             return;
@@ -42,9 +43,10 @@ const UserEdit = () => {
         const response = await fetch(`http://localhost:3000/users/${id}/reset-password`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ newPassword }),
+            body: JSON.stringify({ newPassword })
         });
 
         if (response.ok) {

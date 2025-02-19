@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import "./Shows.css";
 import Card from '../../../Components/User/Card1'
 import { CiFilter } from "react-icons/ci";
@@ -21,30 +21,13 @@ import {
 import { IoChevronDown } from "react-icons/io5";
 import LoadingPage from '../../../Components/User/Loading/index'
 import axios from 'axios'
-
-const data = [
-  { id: 1, genre:'Action', type:'Movie',name: "Your Name", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-15.png" },
-  { id: 2, genre:'Action', type:'Movie', name: "Jujutsu Kaisen", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-14.png" },
-  { id: 3, genre:'Adventure', type:'Movie' ,name: "Chainsaw Man", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-13.png" },
-  { id: 4, genre:'Fantasy', type:'TV Series',name: "One Piece", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-12.png" },
-  { id: 5, genre:'Drama', type:'OVA',name: "86 Eighty-Six", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-11.png" },
-  { id: 6, genre:'Drama', type:'ONA',name: "Darling in the Franxx", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-10.png" },
-  { id: 7, genre:'Action', type:'TV Series',name: "Arcane", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-9.png" },
-  { id: 8, genre:'Action', type:'TV Series',name: "Attack on Titan", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-6.png" },
-  { id: 9, genre:'Action', type:'TV Series',name: "Demon Slayer", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-7.png" },
-  { id: 10, genre:'Action', type:'TV Series',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-8.png" },
-  { id: 11, genre:'Mystery', type:'TV Series',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-25.png" },
-  { id: 12, genre:'Action', type:'Special',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-23.png" },
-  { id: 13, genre:'Action', type:'OVA',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-22.png" },
-  { id: 14, genre:'Action', type:'TV Series',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-8.png" },
-  { id: 15, genre:'Action', type:'TV Series',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-8.png" },
-  { id: 16, genre:'Action', type:'TV Series',name: "Naruto", image: "https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-8.png" }
-];
+import { showContext } from '../../../Context/ShowContext';
 
 const Pagination = () => {
+  const { shows, loading } = useContext(showContext);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15; // Her sayfada gösterilecek öğe sayısı 
-  const [filteredData, setFilteredData] = useState(data); // Add state for filtered data
+  const [filteredData, setFilteredData] = useState(shows); // Initialize with shows from context
 
   // Toplam sayfa sayısını hesapla
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -57,22 +40,28 @@ const Pagination = () => {
   // Sayfa değiştirme fonksiyonu
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Update the effect to set filteredData when shows change
+  useEffect(() => {
+    setFilteredData(shows);
+    setCurrentPage(1); // Reset to first page when shows change
+  }, [shows]);
+
   // New CustomFilterDropdown component
   const CustomFilterDropdown = () => {
     const [openCategory, setOpenCategory] = useState(null);
     const [filters, setFilters] = useState({
-      genre: [],
+      category: [],
       type: [],
       status: [],
-      season: []
+      premiered: []
     });
     
 
     const filterOptions = {
-      genre: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery'],
+      category: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery'],
       type: ['TV Series', 'Movie', 'OVA', 'Special', 'ONA'],
       status: ['Airing', 'Completed', 'Upcoming'],
-      season: ['Winter', 'Spring', 'Summer', 'Fall']
+      premiered: ['Winter', 'Spring', 'Summer', 'Fall']
     };
 
     const handleFilterChange = (category, value) => {
@@ -85,14 +74,22 @@ const Pagination = () => {
     };
 
     const handleFilterApply = () => {
-      const { genre, type, status, season } = filters; // Tüm seçili filtreleri al
-      const newFilteredData = data.filter(item => 
-        (genre.length === 0 || genre.includes(item.genre)) &&
+      const { category, type, status, premiered } = filters; // Tüm seçili filtreleri al
+      const newFilteredData = filteredData.filter(item => 
+        (category.length === 0 || category.includes(item.category)) &&
         (type.length === 0 || type.includes(item.type)) &&
         (status.length === 0 || status.includes(item.status)) &&
-        (season.length === 0 || season.includes(item.season))
+        (premiered.length === 0 || premiered.includes(item.premiered))
       );
-      setFilteredData(newFilteredData); // Filtrelenmiş veriyi güncelle
+
+      // Eğer hiçbir filtre seçilmemişse, eski verileri geri yükle
+      if (category.length === 0 && type.length === 0 && status.length === 0 && premiered.length === 0) {
+        setFilteredData(shows); // Eski verileri geri yükle
+      } else if (newFilteredData.length === 0) {
+        setFilteredData(shows); // Eski verileri geri yükle
+      } else {
+        setFilteredData(newFilteredData); // Filtrelenmiş veriyi güncelle
+      }
       setCurrentPage(1); // İlk sayfaya sıfırla
     };
 
@@ -175,27 +172,7 @@ const Pagination = () => {
       );
     };
 
-   
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('http://localhost:3000/shows'); 
-          setShows(response.data); 
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          setIsLoading(false); 
-        }
-      };
-
-      fetchData();
-    }, []); 
-    const [isLoading, setIsLoading] = useState(true);
-    const [shows, setShows] = useState([]); 
-
-    if (isLoading) return <div><LoadingPage/></div>;
-
-
+    if (loading) return <div><LoadingPage/></div>;
 
     return (
     <div className="shows-filterbar">
@@ -307,7 +284,7 @@ const Pagination = () => {
         <h2 className="font-bold">115 items</h2>
         <div className="anime-list">
           {currentItems.map((item) => (
-            <Card image={item.image} name={item.name} category={item.genre} year={item.type} episode='24' rating='8.5' />
+            <Card key={item.name} image={item.image} name={item.name} category={item.category} type={item.type} year={item.year} episode={item.episode} rating={item.rating} id={item._id} />
             
           ))}
         </div>

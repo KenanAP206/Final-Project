@@ -32,13 +32,14 @@ function Register() {
 
   const handleConfirm = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users/confirm', { confirmPassword: confirmationCode });
-      console.log('Confirmation successful:', response.data);
+      await axios.post('http://localhost:3000/users/confirm', { 
+        confirmPassword: confirmationCode,
+        isFromRegister: true  // Register'dan geldiğini belirt
+      });
+      console.log('Confirmation successful');
       navigate('/login');
-      // Handle successful confirmation (e.g., redirect user to login)
     } catch (error) {
       console.error('Confirmation error:', error.response ? error.response.data : error.message);
-     
     }
   };
 

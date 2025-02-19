@@ -6,11 +6,15 @@ import { route } from './Routers/ShowRouter.js';
 import { userRouter } from './Routers/UserRouter.js';
 import { EpisodeRouter } from './Routers/EpisodeRouter.js';
 
+
 const app = express();
 app.use(express.json());
 app.use(cors({
-    exposedHeaders: ['Content-Range', 'X-Total-Count']
+    origin: ['http://localhost:5173', 'http://localhost:3000'],  // İki portu da ekleyelim
+    credentials: true,
+    exposedHeaders: ['Content-Range', 'X-Total-Count'],
 }));
+
 config();
 
 app.use('/shows', route);

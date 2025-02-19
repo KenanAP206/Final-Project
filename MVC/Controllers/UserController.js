@@ -170,46 +170,105 @@ export const UserController = {
   },
 
   login: async (req, res) => {
-    let { email, password } = req.body;
-    const user = await UserModel.findOne({ email: email });
-    if (!user) {
-      return res.send("Register olmamisiniz");
-    } else {
-      let isTruePassword = await bcrypt.compare(password, user.password);
-      if (!isTruePassword) {
-        return res.send("Password dogru deyildir");
-      } else {
+    try {
+        let { email, password } = req.body;
+        const user = await UserModel.findOne({ email: email });
+        
+        if (!user) {
+            return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+        }
+        
+        let isTruePassword = await bcrypt.compare(password, user.password);
+        if (!isTruePassword) {
+            return res.status(401).json({ error: "Şifre yanlış" });
+        }
+        
+        // Onay kodu oluştur ve kaydet
         let confirmCode = Math.floor(Math.random() * 999999);
         user.confirmPassword = confirmCode;
         await user.save();
 
-        const info = await transporter.sendMail({
-          to: user.email,
-          subject: "Hello ✔",
-          text: "Hello world?",
-          html: `<h1 style="color:red">Bu sizin confirm kodunuzdur ${confirmCode}</h1>`,
+        // Email gönder
+        await transporter.sendMail({
+            to: user.email,
+            subject: "Onay Kodu",
+            html: `<h1>Onay Kodunuz: ${confirmCode}</h1>`,
         });
-      }
-      res.send(user);
+
+        // Başarılı yanıt
+        res.status(200).json({
+            success: true,
+            message: "Onay kodu email adresinize gönderildi",
+            userId: user._id
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: error.message });
     }
   },
 
   confirm: async (req, res) => {
-    let confirmPassword = req.body.confirmPassword;
-    let user = await UserModel.findOne({ confirmPassword: confirmPassword });
-    if (!user) {
-      res.send("Sizin confirm password yalnisdir");
-    } else {
-      let token = jwt.sign({ userId: user._id, email: user.email }, secretKey, { expiresIn: "2d" });
-      res.send({ token });
+    try {
+        let { confirmPassword, isFromRegister } = req.body;
+        let user = await UserModel.findOne({ confirmPassword: confirmPassword });
+        
+        if (!user) {
+            return res.status(400).json({ error: "Geçersiz onay kodu" });
+        }
+
+        // Onay kodunu sıfırla
+        user.confirmPassword = null;
+        await user.save();
+
+        // Eğer register'dan geliyorsa token oluşturma
+        if (isFromRegister) {
+            return res.status(200).json({
+                success: true,
+                message: "Email doğrulama başarılı"
+            });
+        }
+
+        // Login'den geliyorsa token oluştur
+        const token = jwt.sign(
+            { 
+                userId: user._id, 
+                email: user.email,
+                role: user.role ,
+                image: user.image
+            }, 
+            secretKey, 
+            { expiresIn: "2d" }
+        );
+
+        res.status(200).json({
+            success: true,
+            token: token,
+            user: {
+                id: user._id,
+                email: user.email,
+                role: user.role,
+                image: user.image
+            }
+        });
+    } catch (error) {
+        console.error('Confirmation error:', error);
+        res.status(500).json({ error: error.message });
     }
   },
 
   checkAuth: async (req, res) => {
-    if (req.isAuthenticated()) { 
-        return res.status(200).json({ authenticated: true });
-    } else {
-        return res.status(401).json({ authenticated: false });
+    try {
+        // Since AuthMiddleware already verified the token and set req.user
+        // We just need to return a success response
+        res.status(200).json({ 
+            authenticated: true,
+            user: req.user 
+        });
+    } catch (error) {
+        res.status(401).json({ 
+            authenticated: false,
+            error: error.message 
+        });
     }
   },
 

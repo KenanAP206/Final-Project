@@ -11,7 +11,8 @@ let UserSchema = new Schema({
     enum: ['admin', 'user', 'editor'],
     default: 'user',
     required: true 
-  }
+  },
+  description: { type: String }
 });
 
 export let UserModel = model('User', UserSchema); 
