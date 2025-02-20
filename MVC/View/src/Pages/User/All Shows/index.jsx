@@ -1,10 +1,14 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import "./Shows.css";
 import Card from '../../../Components/User/Card1'
 import { CiFilter } from "react-icons/ci";
 import { FaStar } from "react-icons/fa";
-import { FaChevronLeft } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { IoChevronDown } from "react-icons/io5";
+import LoadingPage from '../../../Components/User/Loading/index'
+import axios from 'axios';
+import { NavLink } from "react-router-dom";
 import {
   useFloating,
   autoUpdate,
@@ -18,44 +22,55 @@ import {
   FloatingFocusManager,
   useId
 } from '@floating-ui/react';
-import { IoChevronDown } from "react-icons/io5";
-import LoadingPage from '../../../Components/User/Loading/index'
-import axios from 'axios'
-import { showContext } from '../../../Context/ShowContext';
 
 const Pagination = () => {
-  const { shows, loading } = useContext(showContext);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15; // Her sayfada gösterilecek öğe sayısı 
-  const [filteredData, setFilteredData] = useState(shows); // Initialize with shows from context
+  const [shows, setShows] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedLetter, setSelectedLetter] = useState(null);
+  const itemsPerPage = 15;
 
-  // Toplam sayfa sayısını hesapla
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  // URL'den kategori parametresini al ve state'e kaydet
+  const getInitialCategory = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get('category');
+  };
 
-  // Şu anki sayfanın verilerini al
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Sayfa değiştirme fonksiyonu
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Update the effect to set filteredData when shows change
   useEffect(() => {
-    setFilteredData(shows);
-    setCurrentPage(1); // Reset to first page when shows change
-  }, [shows]);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/shows');
+        const data = response.data.data;
+        setShows(data);
+        
+        const categoryFromUrl = getInitialCategory();
+        if (categoryFromUrl) {
+          const filtered = data.filter(item => item.category === categoryFromUrl);
+          setFilteredData(filtered);
+        } else {
+          setFilteredData(data);
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
 
-  // New CustomFilterDropdown component
+    fetchData();
+  }, [location.search]);
+
   const CustomFilterDropdown = () => {
-    const [openCategory, setOpenCategory] = useState(null);
     const [filters, setFilters] = useState({
-      category: [],
+      category: getInitialCategory() ? [getInitialCategory()] : [],
       type: [],
       status: [],
       premiered: []
     });
-    
 
     const filterOptions = {
       category: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery'],
@@ -65,32 +80,68 @@ const Pagination = () => {
     };
 
     const handleFilterChange = (category, value) => {
-      setFilters(prev => ({
-        ...prev,
-        [category]: prev[category].includes(value)
-          ? prev[category].filter(item => item !== value)
-          : [...prev[category], value]
-      }));
+      setFilters(prev => {
+        const updatedFilters = {
+          ...prev,
+          [category]: prev[category].includes(value)
+            ? prev[category].filter(item => item !== value)
+            : [...prev[category], value]
+        };
+        return updatedFilters;
+      });
     };
 
     const handleFilterApply = () => {
-      const { category, type, status, premiered } = filters; // Tüm seçili filtreleri al
-      const newFilteredData = filteredData.filter(item => 
-        (category.length === 0 || category.includes(item.category)) &&
-        (type.length === 0 || type.includes(item.type)) &&
-        (status.length === 0 || status.includes(item.status)) &&
-        (premiered.length === 0 || premiered.includes(item.premiered))
-      );
+      let newFilteredData = shows;
 
-      // Eğer hiçbir filtre seçilmemişse, eski verileri geri yükle
-      if (category.length === 0 && type.length === 0 && status.length === 0 && premiered.length === 0) {
-        setFilteredData(shows); // Eski verileri geri yükle
-      } else if (newFilteredData.length === 0) {
-        setFilteredData(shows); // Eski verileri geri yükle
-      } else {
-        setFilteredData(newFilteredData); // Filtrelenmiş veriyi güncelle
+      // Önce harf filtresi uygula
+      if (selectedLetter) {
+        newFilteredData = newFilteredData.filter(item => 
+          item.name.charAt(0).toUpperCase() === selectedLetter
+        );
       }
-      setCurrentPage(1); // İlk sayfaya sıfırla
+
+      // Sonra diğer filtreleri uygula
+      newFilteredData = newFilteredData.filter(item => {
+        const categoryMatch = filters.category.length === 0 || filters.category.includes(item.category);
+        const typeMatch = filters.type.length === 0 || filters.type.includes(item.type);
+        const statusMatch = filters.status.length === 0 || filters.status.includes(item.status);
+        const premieredMatch = filters.premiered.length === 0 || filters.premiered.includes(item.premiered);
+
+        return categoryMatch && typeMatch && statusMatch && premieredMatch;
+      });
+
+      // URL'i güncelle (sadece kategori için)
+      if (filters.category.length > 0) {
+        navigate(`/allshows?category=${filters.category[0]}`);
+      } else {
+        navigate('/allshows');
+      }
+
+      setFilteredData(newFilteredData);
+      setCurrentPage(1);
+    };
+
+    const handleLetterClick = (letter) => {
+      setSelectedLetter(letter);
+      const letterFiltered = shows.filter(item => 
+        item.name.charAt(0).toUpperCase() === letter
+      );
+      setFilteredData(letterFiltered);
+      setCurrentPage(1);
+    };
+
+    const handleAllClick = () => {
+      setSelectedLetter(null);
+      setFilters({
+        category: [],
+        type: [],
+        status: [],
+        premiered: []
+      });
+      setFilteredData(shows);
+      setCurrentPage(1);
+      navigate('/allshows');
     };
 
     const DropdownMenu = ({ category, options }) => {
@@ -100,27 +151,15 @@ const Pagination = () => {
       const { refs: floatingRefs, floatingStyles, context } = useFloating({
         open: isOpen,
         onOpenChange: setIsOpen,
-        middleware: [
-          offset(4),
-          flip({ padding: 8 }),
-          shift()
-        ],
+        middleware: [offset(4), flip({ padding: 8 }), shift()],
         whileElementsMounted: autoUpdate
       });
 
       const click = useClick(context);
       const dismiss = useDismiss(context);
       const role = useRole(context);
-
-      const { getReferenceProps, getFloatingProps } = useInteractions([
-        click,
-        dismiss,
-        role
-      ]);
-
+      const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
       const headingId = useId();
-
-      const selectedCount = filters[category].length;
 
       return (
         <div>
@@ -130,9 +169,9 @@ const Pagination = () => {
             className="select"
           >
             <span className="capitalize">{category} <IoChevronDown/></span>
-            {selectedCount > 0 && (
+            {filters[category].length > 0 && (
               <span className="selectedcount">
-                {selectedCount}
+                {filters[category].length}
               </span>
             )}
           </button>
@@ -172,149 +211,126 @@ const Pagination = () => {
       );
     };
 
-    if (loading) return <div><LoadingPage/></div>;
+    if (isLoading) return <LoadingPage/>;
 
     return (
-    <div className="shows-filterbar">
+      <div className="shows-filterbar">
         <div className="filter-up">
           <h2>Filter</h2>
           <div className="filter-btns">
-            <button>All</button>
-            <button>A</button>
-            <button>B</button>
-            <button>C</button>
-            <button>D</button>
-            <button>E</button>
-            <button>F</button>
-            <button>G</button>
-            <button>D</button>
-            <button>E</button>
-            <button>F</button>
-            <button>G</button>
-            <button>H</button>
-            <button>I</button>
-            <button>J</button>
-            <button>K</button>
-            <button>L</button>
-            <button>N</button>
-            <button>O</button>
-            <button>P</button>
-            <button>Q</button>
-            <button>R</button>
-            <button>S</button>
-            <button>T</button>
-            <button>U</button>
-            <button>V</button>
-            <button>W</button>
-            <button>1-9</button>
+            <button onClick={handleAllClick}>All</button>
+            {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].map(letter => (
+              <button 
+                key={letter} 
+                onClick={() => handleLetterClick(letter)}
+                className={selectedLetter === letter ? 'active' : ''}
+              >
+                {letter}
+              </button>
+            ))}
           </div>
-  
-      <div className="filter-selections">
-        {Object.entries(filterOptions).map(([category, options]) => (
-          <DropdownMenu
-            key={category}
-            category={category}
-            options={options}
-          />
-        ))}
 
-      </div>
+          <div className="filter-selections">
+            {Object.entries(filterOptions).map(([category, options]) => (
+              <DropdownMenu
+                key={category}
+                category={category}
+                options={options}
+              />
+            ))}
+          </div>
 
-    <button className="filterer" onClick={handleFilterApply}>Filter <CiFilter /></button>
-    </div>
+          <button className="filterer" onClick={handleFilterApply}>
+            Filter <CiFilter />
+          </button>
+        </div>
+
         <div className="filter-low">
           <h2>Top Rated Shows</h2>
           <p>Based on your filter</p>
           <div className="filter-low-cards">
-            <div className="flc-card">
-              <img srcSet="https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-27.png" alt="" />
-              <div className="flc-card-txt">
-                <div className="flc-txt-up">
-                  <h4>The Daily Life of the Immortal King</h4>
-                  <p>Season 3</p>
-                </div>
-                <h6>Action | 2021 | EP-24 | <FaStar /> 8.5</h6>
-              </div>
-            </div>
-            <div className="flc-card">
-              <img srcSet="https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-28.png" alt="" />
-              <div className="flc-card-txt">
-                <div className="flc-txt-up">
-                  <h4>The Daily Life of the Immortal King</h4>
-                  <p>Season 3</p>
-                </div>
-                <h6>Action | 2021 | EP-24 | <FaStar /> 8.5</h6>
-              </div>
-            </div>
-            <div className="flc-card">
-              <img srcSet="https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-29.png" alt="" />
-              <div className="flc-card-txt">
-                <div className="flc-txt-up">
-                  <h4>The Daily Life of the Immortal King</h4>
-                  <p>Season 3</p>
-                </div>
-                <h6>Action | 2021 | EP-24 | <FaStar /> 8.5</h6>
-              </div>
-            </div>
-            <div className="flc-card">
-              <img srcSet="https://uiparadox.co.uk/templates/vivid/v3/assets/media/anime-card/img-30.png" alt="" />
-              <div className="flc-card-txt">
-                <div className="flc-txt-up">
-                  <h4>The Daily Life of the Immortal King</h4>
-                  <p>Season 3</p>
-                </div>
-                <h6>Action | 2021 | EP-24 | <FaStar /> 8.5</h6>
-              </div>
-            </div>
+            {filteredData
+              .sort((a, b) => b.rating - a.rating)
+              .slice(0, 4)
+              .map((item) => (
+                <NavLink 
+                  to={item.type === 'Movie' ? `/movie/${item._id}` : `/series/${item._id}`}
+                  key={item._id}
+                >
+                  <div className="flc-card">
+                    <img src={item.image} alt={item.name} />
+                    <div className="flc-card-txt">
+                      <div className="flc-txt-up">
+                        <h4>{item.name}</h4>
+                        <p>{item.season}</p>
+                      </div>
+                      <h6>
+                        {item.category} | {item.year} | EP-{item.episode} | <FaStar /> {item.rating}
+                      </h6>
+                    </div>
+                  </div>
+                </NavLink>
+              ))}
           </div>
         </div>
-    </div>
+      </div>
     );
   };
 
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const currentItems = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <section id="shows">
-    
       <CustomFilterDropdown />
-
-
-
       <div className="pagination-container">
-        <h2 className="font-bold">115 items</h2>
+        <h2 className="font-bold">{filteredData.length} items</h2>
         <div className="anime-list">
           {currentItems.map((item) => (
-            <Card key={item.name} image={item.image} name={item.name} category={item.category} type={item.type} year={item.year} episode={item.episode} rating={item.rating} id={item._id} />
-            
+            <Card
+              key={item._id}
+              image={item.image}
+              name={item.name}
+              category={item.category}
+              type={item.type}
+              year={item.year}
+              episode={item.episode}
+              rating={item.rating}
+              id={item._id}
+            />
           ))}
         </div>
 
-        {/* Sayfa Numaraları */}
-        <div className="pagination">
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <FaChevronLeft/>
-          </button>
-
-          {[...Array(totalPages)].map((_, index) => (
+        {totalPages > 1 && (
+          <div className="pagination">
             <button
-              key={index + 1}
-              onClick={() => paginate(index + 1)}
-              className={currentPage === index + 1 ? "active" : ""}
+              onClick={() => setCurrentPage(prev => prev - 1)}
+              disabled={currentPage === 1}
             >
-              {index + 1}
+              <FaChevronLeft/>
             </button>
-          ))}
 
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-           <FaChevronRight/>
-          </button>
-        </div>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setCurrentPage(index + 1)}
+                className={currentPage === index + 1 ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <FaChevronRight/>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

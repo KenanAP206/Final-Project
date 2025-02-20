@@ -2,13 +2,14 @@
     .category-all{
         gap: 20px 40px;
         display: grid;
-        grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+        grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
 
         .category-card{
+            max-width: 330px;
             display: flex;
             gap: 5px;
             padding: 5px 20px;
-            width: max-content;
+            width: 350px;
             border: 1px solid rgba(255, 255, 255, 0.192);
             border-radius: 15px;
             cursor: pointer;

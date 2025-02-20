@@ -7,10 +7,30 @@ import {
     SelectInput,
     required,
     ImageField,
-    useRecordContext
+    useRecordContext,
+    SelectArrayInput
 } from 'react-admin';
 import { Box, Typography } from '@mui/material';
-
+const roleChoices = [
+    { id: 'Action', name: 'Action' },
+    { id: 'Adventure', name: 'Adventure' },
+    { id: 'Comedy', name: 'Comedy' },
+    { id: 'Drama', name: 'Drama' },
+    { id: 'Fantasy', name: 'Fantasy' },
+    { id: 'Horror', name: 'Horror' },
+    { id: 'Shonen', name: 'Shonen' },
+    { id: 'Mystery', name: 'Mystery' },
+    { id: 'Sci-Fi', name: 'Sci-Fi' },
+    { id: 'Slice of Life', name: 'Slice of Life' },
+    { id: 'Psychological', name: 'Psychological' },
+    { id: 'Mecha', name: 'Mecha' },
+    { id: 'Romance', name: 'Romance' },
+    { id: 'Thriller', name: 'Thriller' },
+    { id: 'Supernatural', name: 'Supernatural' },
+    { id: 'Sports', name: 'Sports' },
+    { id: 'Historical', name: 'Historical' },
+    { id: 'Martial Arts', name: 'Martial Arts' }
+];
 const ImagePreview = ({ record }) => {
     if (!record || !record.image) return null;
 
@@ -37,7 +57,7 @@ const ShowCreate = () => {
     return (
         <Create>
             <SimpleForm>
-       
+
                 <TextInput source="name" validate={required()} fullWidth />
                 <TextInput source="desc" multiline rows={4} fullWidth />
                 <NumberInput source="year" validate={required()} />
@@ -62,11 +82,11 @@ const ShowCreate = () => {
                 />
                 <TextInput source="age_rating" />
                 <SelectInput source="quality"
-                choices={[
-                    { id: 'SD', name: 'SD' },
-                    { id: 'HD', name: 'HD' }
-                ]}
-                validate={required()} />
+                    choices={[
+                        { id: 'SD', name: 'SD' },
+                        { id: 'HD', name: 'HD' }
+                    ]}
+                    validate={required()} />
                 <SelectInput
                     source="category"
                     choices={[
@@ -90,7 +110,7 @@ const ShowCreate = () => {
                 <NumberInput source="rating" min={0} max={5} step={0.1} />
                 <NumberInput source="views" />
                 <TextInput source="country" />
-                <TextInput source="genre" />
+                <SelectArrayInput source="genre" choices={roleChoices} />
                 <SelectInput
                     source="premiered"
                     choices={[
@@ -99,19 +119,19 @@ const ShowCreate = () => {
                         { id: 'Summer', name: 'Summer' },
                         { id: 'Fall', name: 'Fall' }
                     ]}
-                    validate={required()}/>
-           
-            
+                    validate={required()} />
 
-         
-            <TextInput
-                source="image"
-                fullWidth
-                helperText="Enter image URL"
-            />
-            <TextInput source="trailer" fullWidth />
-            <BooleanInput source="isNew" defaultValue={true} />
-        </SimpleForm>
+
+
+
+                <TextInput
+                    source="image"
+                    fullWidth
+                    helperText="Enter image URL"
+                />
+                <TextInput source="trailer" fullWidth />
+                <BooleanInput source="isNew" defaultValue={true} />
+            </SimpleForm>
         </Create >
     );
 };
