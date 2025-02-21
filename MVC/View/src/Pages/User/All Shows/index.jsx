@@ -218,7 +218,7 @@ const Pagination = () => {
         <div className="filter-up">
           <h2>Filter</h2>
           <div className="filter-btns">
-            <button onClick={handleAllClick}>All</button>
+            <button     className={selectedLetter === null ? 'active' : ''} onClick={handleAllClick}>All</button>
             {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].map(letter => (
               <button 
                 key={letter} 

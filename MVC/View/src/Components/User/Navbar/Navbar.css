@@ -1,4 +1,5 @@
 .navbarim{
+    
     font-family: 'Jost';
     padding: 30px 5%;
     max-height: 13vh;
@@ -29,6 +30,7 @@
         gap: 30px;
 
         .searcher{
+            position: relative;
             display: flex;
             align-items: center;
             background-color: #212020;
@@ -46,6 +48,69 @@
                 border:none;
                 
             }
+
+            .searcher-box{
+                z-index: 100;
+                position: absolute;
+                width: 100%;
+                bottom: 0%;
+                transform: translateY(102%);
+                border-radius: 5px;
+                left: 0px;
+                opacity: 0.99;
+                border: 1px solid #c144ff34;
+                height: max-content;
+                overflow: hidden;
+                background-color:#212020;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding: 5px;
+                .flc-card{
+                    border-radius: 5px;
+                    display: flex;
+                    height: 100px;
+                    cursor: pointer;
+                    transition: 0.4s;
+                    gap: 10px;
+                    padding: 8px 10px;
+                    background-color: #212020;
+                    border: 1px solid rgba(0, 0, 0, 0.2);
+                    img{
+                        width: 70px;
+                        object-fit: cover;
+                        border-radius: 5px;
+                    }
+                    .flc-card-txt{
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        font-size: 12px;
+                        color: rgba(255, 255, 255, 0.608);
+                        .flc-txt-up{
+                            h4{
+                                color: white;
+                                font-size: 15px;
+                                font-weight: 600;
+                            }
+                        }
+                        h6{
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+
+                            svg{
+                                color: #EEAA0F;
+                            }
+                        }
+                    }
+
+                    &:hover{
+                        box-shadow: 0px 0px 5px #af43fc;
+                    }
+                }
+            }
+
         }
         svg{
             cursor: pointer;
@@ -60,6 +125,46 @@
   
         }
 
+        .profile-btn{
+            display: flex;
+            position: relative;
+            .profile-bar{
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                left: 50%;
+                bottom: 0px;
+                transform: translate(-50%,103%);
+                padding: 0px;
+                background-color: #2A2A3C;
+                width: max-content;
+                border-radius: 5px;
+                transition: 0.5s;
+                border: 1px solid #2A2A3C;
+                z-index: 10;
+                overflow: hidden;
+                a{
+                    padding: 10px 10px 0px;
+                    transition: 0.5s;
+                    &:hover{
+                        background-color: #802bbd;
+                    }
+                }
+                .pb-l{
+                    padding-bottom: 10px;
+                    &:hover{
+                        background-color: rgb(198, 36, 36);
+                    }
+                }
+                .pb-log{
+                    padding-bottom: 10px;
+                }
+                &:hover{
+                    border: 1px solid #af43fc;
+
+                }
+            }
+        }
         .user-btn{
             color: #1B1B1B;
             font-size: 40px;

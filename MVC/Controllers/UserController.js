@@ -2,6 +2,7 @@ import { UserModel } from '../Models/UserModel.js';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const secretKey = "SECRETKEY";
 
@@ -294,4 +295,5 @@ export const UserController = {
       res.status(500).json({ error: error.message });
     }
   },
+
 }; 

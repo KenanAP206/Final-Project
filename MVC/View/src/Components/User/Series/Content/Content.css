@@ -46,6 +46,23 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+
+            .favorim{
+                width: min-content;
+                padding: 10px;
+                border-radius: 50px;
+                svg{
+                    font-size: 15px;
+                    color: white;
+                    transition: 0.5s;
+                }
+
+                &:hover{
+                    svg{
+                        color: rgb(255, 0, 0);
+                    }
+                }
+              }
             .scl-header{
                 h2{
                 display: flex;

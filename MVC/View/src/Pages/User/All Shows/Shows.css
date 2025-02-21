@@ -1,47 +1,56 @@
-#shows{
+#shows {
     padding-top: 20px;
     width: 100%;
     display: flex;
     justify-content: space-between;
     gap: 30px;
 
-    .shows-filterbar{
+    .shows-filterbar {
         min-width: 320px;
         display: flex;
         flex-direction: column;
         gap: 40px;
 
-        h2{
+        h2 {
             font-size: 23px;
             font-weight: 700;
         }
 
-        .filter-up{
+        .filter-up {
             display: flex;
             flex-direction: column;
             gap: 20px;
 
-            .filter-btns{
+            .filter-btns {
                 display: grid;
-                grid-template-columns: repeat(auto-fit,minmax(40px,1fr));
+                grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
                 gap: 7px;
-                button{
+
+                .active {
+                    color: #c131ff;
+                }
+
+                button {
                     cursor: pointer;
                     text-align: center;
                     font-weight: 600;
                     font-size: 13px;
-                    padding:5px;
+                    padding: 5px;
                     border-radius: 5px;
                     background-color: #212020;
+
+                    &:active {
+                        color: #9C16D7;
+                    }
                 }
             }
 
-            .filter-selections{
+            .filter-selections {
                 display: grid;
                 gap: 10px 5px;
-                grid-template-columns: repeat(auto-fit,minmax(100px,1fr));
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 
-                .select{
+                .select {
                     width: 100px;
                     font-size: 15px;
                     color: #ffffffc3;
@@ -52,14 +61,15 @@
                     flex-direction: row;
                     justify-content: space-between;
 
-                    .capitalize{
+                    .capitalize {
                         display: flex;
                         flex-direction: row;
                         align-items: center;
                         gap: 2px;
                     }
                 }
-                .selectedcount{
+
+                .selectedcount {
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -69,18 +79,18 @@
                     background-color: #af43fc;
                 }
 
-                .checkboxdiv{
+                .checkboxdiv {
                     background-color: #212020;
                     padding: 5px;
                     text-transform: capitalize;
 
-                    .checkboxdiv-header{
+                    .checkboxdiv-header {
                         border-bottom: 1px solid rgba(255, 255, 255, 0.189);
                     }
                 }
             }
 
-            .filterer{
+            .filterer {
                 width: max-content;
                 display: flex;
                 align-items: center;
@@ -92,21 +102,24 @@
                 transition: 0.5s;
                 background-color: #af43fc;
                 color: #1B1B1B;
-                &:hover{
+
+                &:hover {
                     cursor: pointer;
                     box-shadow: 0px 0px 40px #9C16D7;
                 }
             }
         }
-        .filter-low{
 
-            .filter-low-cards{
+        .filter-low {
+
+            .filter-low-cards {
                 margin-top: 20px;
                 width: 100%;
                 display: grid;
-                grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                 gap: 10px;
-                .flc-card{
+
+                .flc-card {
                     display: flex;
                     cursor: pointer;
                     transition: 0.8s;
@@ -115,35 +128,39 @@
                     background-color: #212020;
                     border-radius: 15px;
                     border: 1px solid rgba(255, 255, 255, 0.148);
-                    img{
+
+                    img {
                         width: 60px;
                         border-radius: 10px;
                     }
-                    .flc-card-txt{
+
+                    .flc-card-txt {
                         display: flex;
                         flex-direction: column;
                         justify-content: space-between;
                         font-size: 14px;
                         color: rgba(255, 255, 255, 0.608);
-                        .flc-txt-up{
-                            h4{
+
+                        .flc-txt-up {
+                            h4 {
                                 color: white;
                                 font-size: 13px;
                                 font-weight: 600;
                             }
                         }
-                        h6{
+
+                        h6 {
                             display: flex;
                             align-items: center;
                             gap: 5px;
 
-                            svg{
+                            svg {
                                 color: #EEAA0F;
                             }
                         }
                     }
 
-                    &:hover{
+                    &:hover {
                         box-shadow: 0px 0px 30px #af43fc;
                     }
                 }
@@ -158,31 +175,32 @@
     text-align: center;
     margin-top: 20px;
     width: 100%;
-    h2{
+
+    h2 {
         font-weight: 500;
         text-align: start;
         margin: 0 0 30px;
         font-size: 13px;
         color: rgba(255, 255, 255, 0.677);
     }
-  }
-  
-  .anime-list {
+}
+
+.anime-list {
     display: grid;
     text-align: start;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
-  }
-  
-  
-  .pagination {
+}
+
+
+.pagination {
     margin-top: 20px;
     display: flex;
     gap: 2px;
     justify-content: center;
-  }
-  
-  .pagination button {
+}
+
+.pagination button {
     background: #212020;
     color: white;
     border: none;
@@ -198,14 +216,13 @@
     height: 35px;
     font-weight: 500;
     width: 35px;
-  }
-  
-  .pagination button:hover {
+}
+
+.pagination button:hover {
     background: #666;
-  }
-  
-  .pagination button.active {
+}
+
+.pagination button.active {
     background: #9C16D7;
     color: #1B1B1B;
-  }
-  
+}

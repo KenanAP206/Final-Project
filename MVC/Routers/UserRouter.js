@@ -36,3 +36,4 @@ userRouter.post("/",AuthMiddleware,AdminMiddleware, UserController.create);
 userRouter.put("/:id/reset-password",AuthMiddleware, UserController.resetPassword);     
 
 userRouter.get("/check-auth", UserController.checkAuth);
+

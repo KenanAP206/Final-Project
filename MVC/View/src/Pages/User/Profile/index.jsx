@@ -29,17 +29,14 @@ const ProfilePage = () => {
         if (!isOpen) return null;
 
         const handleSave = () => {
-            // If values is a string (single input), pass it directly
             if (typeof values === 'string') {
                 onSave(inputValues);
             } else {
-                // If values is an object (multiple inputs), pass the object
                 onSave(inputValues);
             }
             onClose();
         };
         
-        // Handle single input case
         if (typeof values === 'string') {
             return (
                 <div className="modal-overlay">
@@ -62,7 +59,6 @@ const ProfilePage = () => {
             );
         }
 
-        // Handle multiple inputs case
         return (
             <div className="modal-overlay">
                 <div className="modal-content">
@@ -91,7 +87,6 @@ const ProfilePage = () => {
         );
     };
 
-    // Token'dan kullanıcı bilgilerini al ve verileri çek
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
@@ -232,13 +227,13 @@ const ProfilePage = () => {
                         </button>
                     </div>
                     <div className="detail-item">
-                        <label>Date of Birth*</label>
-                        <p>Not specified</p>
+                        <label>Favorite Shows</label>
+                        <p>{userData.favorites}</p>
                         <button 
                             className="edit-button"
                             onClick={() => setIsModalOpen(prev => ({ ...prev, birth: true }))}
                         >
-                            Edit
+                            Manage
                         </button>
                     </div>
                     <div className="detail-item">

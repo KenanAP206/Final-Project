@@ -3,8 +3,10 @@ import axios from 'axios';
 import { useParams } from 'react-router';
 import "./Content.css";
 import { FaStar } from "react-icons/fa";
-import { IoEye, IoPlayOutline, IoClose } from "react-icons/io5";
+import { IoEye, IoPlayOutline, IoClose, IoHeart } from "react-icons/io5";
 import LoadingPage from '../../Loading/index'
+import Swal from 'sweetalert2';
+
 function Index() {
   const { id } = useParams();
   const [show, setShow] = useState(null);
@@ -13,6 +15,87 @@ function Index() {
   const [selectedAnime, setSelectedAnime] = useState(null);
   const [videoUrl, setVideoUrl] = useState('');
   const [episodes, setEpisodes] = useState([]);
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
+  
+const handleAddToFavorites = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            Toast.fire({
+                icon: "error",
+                background:'#1b1b1b',
+                color:'white',
+                title: "Please login..."
+              });
+            return;
+        }
+    
+        const tokenParts = token.split('.');
+        const payload = JSON.parse(atob(tokenParts[1]));
+        const userId = payload.userId;
+
+        const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        console.log("User Response Data:", userResponse.data);
+
+        const userData = userResponse.data.data;
+
+        console.log("ID:", id);
+        console.log("Favorites before check:", userData.favorites);
+
+        if (!userData.favorites) {
+            userData.favorites = [];
+        }
+
+        if (userData.favorites.includes(id)) {
+            console.log("ID already in favorites:", id);
+            Toast.fire({
+                icon: "error",
+                background:'#1b1b1b',
+                color:'white',                    
+                title: "Already in <b>Favorites</b>!"
+              });
+            return;
+        }
+
+        userData.favorites.push(id);
+
+        await axios.put(`http://localhost:3000/users/${userId}`, userData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            background:'#1b1b1b',
+            color:'white',
+            title: "Added in <b>Favorites</b> successfully!"
+          });
+
+    } catch (error) {
+        console.error('Adding error:', error);
+        Toast.fire({
+            icon: "error",
+            background:'#1b1b1b',
+            color:'white',
+            title: "Something went wrong..."
+          });
+    }
+};
   const handleWatchTrailer = (anime, url) => {
     setSelectedAnime(anime);
     setVideoUrl(url);
@@ -102,7 +185,10 @@ function Index() {
         <div className="scontent-low">
           <div className="scl-left">
             <div className="scl-header">
-              <h2><p>{show.name}</p> <span>{show.rating} <FaStar className='star' /> {show.views} <IoEye /> </span></h2>
+              <h2><p>{show.name}</p> <span>{show.rating} <FaStar className='star' /> {show.views} <IoEye /> </span>
+              <button className='favorim' onClick={handleAddToFavorites}>
+                                    <IoHeart />
+                                </button></h2>
             </div>
             <div className="scl-l-tags">
               <span> {show.age_rating} </span>
