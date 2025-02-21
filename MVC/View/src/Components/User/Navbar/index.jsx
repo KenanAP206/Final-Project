@@ -17,8 +17,29 @@ function index() {
   const profileBarRef = useRef(null);
   const token = localStorage.getItem('token');
   const tokenParts = token ? token.split('.') : [];
-  const payload = tokenParts[1] ? JSON.parse(atob(tokenParts[1])) : {};
-  const role = payload?.role;
+  let payload = {};
+  
+  console.log("Token:", token);
+  console.log("Token Parts:", tokenParts);
+  
+  if (tokenParts.length === 3) {
+    try {
+      const base64Url = tokenParts[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      console.log("Base64 String:", base64);
+      const jsonPayload = JSON.parse(atob(base64));
+      payload = jsonPayload;
+      console.log("Decoded Payload:", payload);
+    } catch (error) {
+      console.error("Token decoding error:", error);
+      console.error("Base64 URL:", base64Url);
+    }
+  } else {
+    console.error("Invalid token format:", token);
+  }
+  
+  const role = payload?.role || null;
+  console.log("User Role:", role); 
   const navigate = useNavigate(); 
 
   function handleLogout(e){

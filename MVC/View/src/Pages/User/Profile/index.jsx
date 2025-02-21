@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Profile.css';
+import Card from '../../../Components/User/Card1/index'
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -10,10 +12,10 @@ const ProfilePage = () => {
         role: '',
         image: '',
         id: '',
-        description: ''
+        description: '',
+        favorites: []
     });
     
-    // Modal states
     const [isModalOpen, setIsModalOpen] = useState({
         profile: false,
         email: false,
@@ -22,7 +24,7 @@ const ProfilePage = () => {
         birth: false
     });
     
-    // Modal component
+  
     const EditModal = ({ isOpen, onClose, title, values, onSave, config }) => {
         const [inputValues, setInputValues] = useState(values);
         
@@ -87,11 +89,91 @@ const ProfilePage = () => {
         );
     };
 
+    const FavoritesModal = ({ isOpen, onClose, favorites }) => {
+        const [selectedShows, setSelectedShows] = useState([]);
+
+        if (!isOpen) return null;
+
+        const handleToggleShowSelection = (showId) => {
+            setSelectedShows(prevSelected => 
+                prevSelected.includes(showId) 
+                    ? prevSelected.filter(id => id !== showId) 
+                    : [...prevSelected, showId]
+            );
+        };
+
+        const handleRemoveFavorites = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`http://localhost:3000/users/${userData.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        favorites: userData.favorites.filter(id => !selectedShows.includes(id))
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to remove favorites');
+                }
+
+                setFavoriteShows(prevShows => prevShows.filter(show => !selectedShows.includes(show._id)));
+                setSelectedShows([]);
+            } catch (error) {
+                console.error('Error removing favorites:', error);
+            }
+        };
+
+        return (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h3>Manage Favorite Shows</h3>
+                    {favoriteShows.length === 0 ? (
+                        <b>No favorite shows available.</b>
+                    ) : (
+                        <ul className='scrolllist'>
+                            {favoriteShows.map((show) => (
+                                <li key={show._id} className="favorite-show">
+                                    <Card 
+                                        image={show.image} 
+                                        name={show.name} 
+                                        category={show.category} 
+                                        type={show.type} 
+                                        year={show.year} 
+                                        episode={show.episode} 
+                                        rating={show.rating} 
+                                        id={show._id} 
+                                    />
+                                    <div className="checkbox-container">
+                                        <input 
+                                            type="checkbox" 
+                                            id={`checkbox-${show._id}`} 
+                                            checked={selectedShows.includes(show._id)} 
+                                            onChange={() => handleToggleShowSelection(show._id)} 
+                                        />
+                                        <label htmlFor={`checkbox-${show._id}`}>{show.name}</label>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    <div className="modal-buttons">
+                        <button className="remove-favorite-button" onClick={handleRemoveFavorites}>Remove Selected</button>
+                        <button className="cancel-button" onClick={onClose}>Close</button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                navigate('/login');
+                navigate('/profile');
                 return;
             }
 
@@ -117,24 +199,22 @@ const ProfilePage = () => {
                     role: data.role,
                     image: data.image,
                     id: data._id || data.id,
-                    description: data.description
+                    description: data.description,
+                    favorites: data.favorites || []
                 });
             } catch (error) {
                 console.error('Error:', error);
-                navigate('/login');
+                navigate('/profile');
             }
         };
 
         fetchUserData();
     }, [navigate]);
 
-    // Güncelleme fonksiyonu
     const handleUpdate = async (updatedData) => {
         const token = localStorage.getItem('token');
-        console.log('Token:', token);
         try {
             if (updatedData.password) {
-                // Call the reset password endpoint
                 const response = await fetch(`http://localhost:3000/users/${userData.id}/reset-password`, {
                     method: 'PUT',
                     headers: {
@@ -151,7 +231,6 @@ const ProfilePage = () => {
 
                 alert('Password updated successfully!');
             } else {
-                // Update other user data
                 const response = await fetch(`http://localhost:3000/users/${userData.id}`, {
                     method: 'PUT',
                     headers: {
@@ -174,10 +253,41 @@ const ProfilePage = () => {
                 alert('Profile updated successfully!');
             }
         } catch (error) {
-            console.error('Update error:', error);
             alert('Failed to update profile: ' + error.message);
         }
     };
+
+    const [favorites, setFavorites] = useState([]);
+    const [favoriteShows, setFavoriteShows] = useState([]);
+
+    useEffect(() => {
+        const fetchFavoriteShows = async () => {
+            if (userData.favorites && userData.favorites.length > 0) {
+                try {
+                    const token = localStorage.getItem('token');
+                    const responses = await Promise.all(
+                        userData.favorites.map(id =>
+                            axios.get(`http://localhost:3000/shows/${id}`, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            })
+                        )
+                    );
+
+                    const shows = responses.map(res => res.data.data);
+                    console.log('Fetched favorite shows:', shows);
+                    setFavoriteShows(shows);
+                } catch (error) {
+                    console.error('Error fetching favorite shows:', error);
+                }
+            } else {
+                console.log('No favorites found or favorites is empty.');
+            }
+        };
+
+        fetchFavoriteShows();
+    }, [userData.favorites]);
 
     return (
         <div className="profile-container">
@@ -228,10 +338,10 @@ const ProfilePage = () => {
                     </div>
                     <div className="detail-item">
                         <label>Favorite Shows</label>
-                        <p>{userData.favorites}</p>
+                        <p>{favoriteShows.length} shows</p>
                         <button 
                             className="edit-button"
-                            onClick={() => setIsModalOpen(prev => ({ ...prev, birth: true }))}
+                            onClick={() => setIsModalOpen(prev => ({ ...prev, favorites: true }))}
                         >
                             Manage
                         </button>
@@ -326,6 +436,12 @@ const ProfilePage = () => {
                 values=""
                 config={{ type: 'text' }}
                 onSave={(value) => handleUpdate({ language: value })}
+            />
+
+            <FavoritesModal 
+                isOpen={isModalOpen.favorites}
+                onClose={() => setIsModalOpen(prev => ({ ...prev, favorites: false }))}
+                favorites={favoriteShows}
             />
               
         </div>
