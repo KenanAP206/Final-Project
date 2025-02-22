@@ -13,7 +13,9 @@ let UserSchema = new Schema({
     required: true 
   },
   description: { type: String },
-  favorites: { type: [String], default: [] }
+  favorites: { type: [String], default: [] },
+  watched : { type: [String], default: [] }
+
 });
 
 export let UserModel = model('User', UserSchema); 

@@ -276,7 +276,6 @@ const ProfilePage = () => {
                     );
 
                     const shows = responses.map(res => res.data.data);
-                    console.log('Fetched favorite shows:', shows);
                     setFavoriteShows(shows);
                 } catch (error) {
                     console.error('Error fetching favorite shows:', error);

@@ -5,7 +5,7 @@ import { showContext } from '../../../../Context/ShowContext';
 import { useContext } from 'react';
 function index() {
   let {shows,loading}=useContext(showContext)
-  const filteredShows = shows ? shows.filter(show => show.views > 8000000).slice(0, 4) : [];
+  const filteredShows = shows ? shows.filter(show => show.views > 1000).slice(0, 4) : [];
   console.log(filteredShows);
   
   return (

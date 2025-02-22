@@ -6,8 +6,10 @@ import { FaStar } from "react-icons/fa";
 import { IoEye, IoPlayOutline, IoClose, IoHeart } from "react-icons/io5";
 import LoadingPage from '../../Loading/index'
 import Swal from 'sweetalert2';
+import { useLocation } from "react-router-dom";
 
 function ContentPage() {
+    const location = useLocation();
     const { id } = useParams();
     const [show, setShow] = useState(null);
     const [isOverlayVisible, setOverlayVisible] = useState(false);
@@ -25,29 +27,31 @@ function ContentPage() {
           toast.onmouseleave = Swal.resumeTimer;
         }
       });
-      
+
+
+
     const handleAddToFavorites = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                Toast.fire({
-                    icon: "error",
-                    background:'#1b1b1b',
-                    color:'white',
-                    title: "Please login..."
-                  });
-                return;
-            }
-        
-            const tokenParts = token.split('.');
-            const payload = JSON.parse(atob(tokenParts[1]));
-            const userId = payload.userId;
-
-            const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    Toast.fire({
+                        icon: "error",
+                        background:'#1b1b1b',
+                        color:'white',
+                        title: "Please login..."
+                    });
+                    return;
                 }
-            });
+            
+                const tokenParts = token.split('.');
+                const payload = JSON.parse(atob(tokenParts[1]));
+                const userId = payload.userId;
+
+                const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
             console.log("User Response Data:", userResponse.data);
 
@@ -107,7 +111,42 @@ function ContentPage() {
         setSelectedAnime(null);
         setVideoUrl('');
     };
+    async function Watched(){
+        const token = localStorage.getItem('token');
+        const tokenParts = token.split('.');
+        const payload = JSON.parse(atob(tokenParts[1]));
+        const userId = payload.userId;
+        const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
+        console.log("User Response Data:", userResponse.data);
+
+        const userData = userResponse.data.data;
+        const pathParts = location.pathname.split("/");
+    
+        if (pathParts.length === 3 && (pathParts[1] === "movie" || pathParts[1] === "series")) {
+          const contentId = pathParts[2]; 
+    
+        if (!userData.watched) {
+            userData.watched = [];
+        }
+
+        if (userData.watched.includes(contentId)) {
+            return;
+        }
+
+        userData.watched.push(contentId);
+
+        await axios.put(`http://localhost:3000/users/${userId}`, userData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+          }
+        }
     useEffect(() => {
         const fetchShow = () => {
             axios.get(`http://localhost:3000/shows/${id}`)
@@ -127,11 +166,16 @@ function ContentPage() {
                 console.error("Error fetching episodes:", error);
             }
         };
-
+        Watched()
         fetchShow();
         fetchEpisodes();
     }, [id]);
 
+
+   
+   
+
+   
     if (!show) return <LoadingPage />;
 
     return (

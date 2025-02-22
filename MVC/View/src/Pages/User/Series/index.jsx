@@ -2,7 +2,7 @@ import React,{useState, useEffect}  from 'react'
 import Content from '../../../Components/User/Series/Content'
 import Comment from '../../../Components/User/Series/Comment'
 import Recent from '../../../Components/User/Series/Recent'
-import Continue from '../../../Components/User/Series/Continue'
+import Continue from '../../../Components/User/Home/Continue'
 import LoadingPage from '../../../Components/User/Loading/index'
 import axios from 'axios'
 function index() {

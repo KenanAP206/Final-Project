@@ -108,7 +108,42 @@ const handleAddToFavorites = async () => {
     setVideoUrl('');
   };
 
+  async function Watched(){
+    const token = localStorage.getItem('token');
+    const tokenParts = token.split('.');
+    const payload = JSON.parse(atob(tokenParts[1]));
+    const userId = payload.userId;
+    const userResponse = await axios.get(`http://localhost:3000/users/${userId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
 
+    console.log("User Response Data:", userResponse.data);
+
+    const userData = userResponse.data.data;
+    const pathParts = location.pathname.split("/");
+
+    if (pathParts.length === 3 && (pathParts[1] === "movie" || pathParts[1] === "series")) {
+      const contentId = pathParts[2]; 
+
+    if (!userData.watched) {
+        userData.watched = [];
+    }
+
+    if (userData.watched.includes(contentId)) {
+        return;
+    }
+
+    userData.watched.push(contentId);
+
+    await axios.put(`http://localhost:3000/users/${userId}`, userData, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+      }
+    }
   
   useEffect(() => {
     const fetchShow = () => {
@@ -135,6 +170,7 @@ const handleAddToFavorites = async () => {
     }
 
     fetchShow();
+    Watched()
   }, [id]);
 
   if (!show) return <div><LoadingPage/></div>;

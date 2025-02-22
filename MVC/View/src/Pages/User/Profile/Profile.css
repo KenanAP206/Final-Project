@@ -196,6 +196,7 @@
     box-shadow: 0px 0px 20px black;
 
     img {
+        object-fit: cover;
         margin: 0px auto;
     }
 }
