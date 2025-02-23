@@ -14,7 +14,8 @@ let UserSchema = new Schema({
   },
   description: { type: String },
   favorites: { type: [String], default: [] },
-  watched : { type: [String], default: [] }
+  watched : { type: [String], default: [] },
+  ispremium: { type: Boolean, default:false }
 
 });
 

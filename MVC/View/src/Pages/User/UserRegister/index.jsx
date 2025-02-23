@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { NavLink, useNavigate } from 'react-router';
 import axios from 'axios';
+import Swal from 'sweetalert2'
+
 const RegisterSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -25,8 +27,18 @@ function Register() {
       const response = await axios.post('http://localhost:3000/users/register', values);
       console.log('Registration successful:', response.data);
       setIsConfirmed(true);
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful',
+        text: 'Please enter the confirmation code sent to your email.',
+      });
     } catch (error) {
       console.error('Registration error:', error.response ? error.response.data : error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: error.response?.data?.message || 'An error occurred while registering.',
+      });
     }
   };
 
@@ -34,12 +46,24 @@ function Register() {
     try {
       await axios.post('http://localhost:3000/users/confirm', { 
         confirmPassword: confirmationCode,
-        isFromRegister: true  // Register'dan geldiğini belirt
+        isFromRegister: true  
       });
       console.log('Confirmation successful');
+      Swal.fire({
+        icon: 'success',
+        title: 'Confirmation Successful',
+        text: 'Your account has been verified. Redirecting to login page...',
+        timer: 2000,
+        showConfirmButton: false,
+      });
       navigate('/login');
     } catch (error) {
       console.error('Confirmation error:', error.response ? error.response.data : error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Confirmation Failed',
+        text: error.response?.data?.message || 'Invalid confirmation code.',
+      });
     }
   };
 
@@ -77,7 +101,7 @@ function Register() {
 
             {isConfirmed && (
               <div className="form-group">
-                <label htmlFor="confirmationCode">Onay Kodu</label>
+                <label htmlFor="confirmationCode">Confirm Code</label>
                 <Field
                   name="confirmationCode"
                   type="number"
@@ -87,7 +111,7 @@ function Register() {
                   }}
                 />
                 <ErrorMessage name="confirmationCode" component="div" className="error" />
-                <button type="button" onClick={handleConfirm}>Onayla</button>
+                <button type="button" onClick={handleConfirm}>Confirm</button>
               </div>
             )}
 

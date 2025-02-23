@@ -18,13 +18,11 @@ export const ShowController = {
 
       const total = await ShowModel.countDocuments();
 
-      // React Admin için doğru format
       const formattedShows = shows.map(show => ({
         ...show.toObject(),
         id: show._id
       }));
 
-      // Content-Range header'ını ekle
       res.set('Content-Range', `shows ${(page - 1) * perPage}-${page * perPage}/${total}`);
       
       res.json({
@@ -42,7 +40,6 @@ export const ShowController = {
       if (!show) {
         return res.status(404).json({ error: 'Show not found' });
       }
-      // React Admin için doğru format
       const formattedShow = {
         ...show.toObject(),
         id: show._id
@@ -58,7 +55,6 @@ export const ShowController = {
       if (!show) {
         return res.status(404).json({ error: 'Show not found' });
       }
-      // React Admin için doğru format
       const formattedShow = {
         ...show.toObject(),
         id: show._id
@@ -78,7 +74,6 @@ export const ShowController = {
       if (!show) {
         return res.status(404).json({ error: 'Show not found' });
       }
-      // React Admin için doğru format
       const formattedShow = {
         ...show.toObject(),
         id: show._id
@@ -92,7 +87,6 @@ export const ShowController = {
     try {
       const newShow = new ShowModel(req.body);
       const savedShow = await newShow.save();
-      // React Admin için doğru format
       const formattedShow = {
         ...savedShow.toObject(),
         id: savedShow._id
@@ -102,10 +96,8 @@ export const ShowController = {
       res.status(500).json({ error: error.message });
     }
   },
-  // Toplu silme için yeni metod
   deleteMany: async (req, res) => {
     try {
-        // Check if ids is in query params or body
         const idsToDelete = req.query.ids ? JSON.parse(req.query.ids) : req.body.ids;
         
         if (!idsToDelete || !Array.isArray(idsToDelete)) {

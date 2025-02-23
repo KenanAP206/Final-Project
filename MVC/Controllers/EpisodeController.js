@@ -10,7 +10,7 @@ export const EpisodeController={
         try {
             const id = req.params.id;
             const episodes = await EpisodeModel.find({showId: id});
-            // Format episodes to include id field
+
             const formattedEpisodes = episodes.map(episode => ({
                 ...episode.toObject(),
                 id: episode._id
@@ -91,7 +91,6 @@ export const EpisodeController={
     }
 }
 
-// Set up an interval to run the update every hour
 setInterval(EpisodeController.updateNewStatus, 60 * 60 * 1000);
 
 

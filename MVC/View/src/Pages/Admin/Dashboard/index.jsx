@@ -1,4 +1,3 @@
-// Pages/Admin/Dashboard/index.jsx
 import React, { useMemo } from 'react';
 import { useGetList } from 'react-admin';
 import { 
@@ -9,9 +8,9 @@ import {
   useMediaQuery
 } from '@mui/material';
 import { subDays, startOfDay } from 'date-fns';
-import UserList from './UserList'; // Kullanıcı listesi bileşeni
-import ShowsChart from './ShowsChart'; // Dizi ve film grafiği bileşeni
-import Welcome from './Welcome'; // Hoş geldiniz bileşeni
+import UserList from './UserList'; 
+import ShowsChart from './ShowsChart'; 
+import Welcome from './Welcome'; 
 
 const Dashboard = () => {
   const isXSmall = useMediaQuery((theme) =>
@@ -23,7 +22,7 @@ const Dashboard = () => {
   const aMonthAgo = useMemo(() => subDays(startOfDay(new Date()), 30), []);
 
   const { data: shows } = useGetList('shows', {
-    filter: { date_gte: aMonthAgo.toISOString() }, // Son 30 gün içinde eklenen diziler
+    filter: { date_gte: aMonthAgo.toISOString() }, 
     sort: { field: 'releaseDate', order: 'DESC' },
     pagination: { page: 1, perPage: 50 },
   });
@@ -36,13 +35,13 @@ const Dashboard = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Welcome /> {/* Hoş geldiniz bileşeni */}
+        <Welcome /> 
       </Grid>
       <Grid item xs={12} md={8}>
         <Card>
           <CardHeader title="Shows and Movies Statistics" />
           <CardContent>
-            <ShowsChart data={shows} /> {/* Dizi ve film grafiği bileşeni */}
+            <ShowsChart data={shows} /> 
           </CardContent>
         </Card>
       </Grid>
@@ -51,7 +50,7 @@ const Dashboard = () => {
         <Card>
           <CardHeader title="Users" />
           <CardContent>
-            <UserList users={users} /> {/* Kullanıcı listesi bileşeni */}
+            <UserList users={users} />
           </CardContent>
         </Card>
       </Grid>

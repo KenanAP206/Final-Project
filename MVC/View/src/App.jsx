@@ -4,10 +4,10 @@ import './App.css';
 import Home from './Pages/User/Home';
 import Series from './Pages/User/Series'
 import AllShows from './Pages/User/All Shows'
-import Blog from './Pages/User/Blog'
-import Contact from './Pages/User/Contact'
 import Movie from './Pages/User/Movie'
-import Payment from './Pages/User/Payment'
+import Payment from './Pages/User/Payment/index'
+import PaymentSuccess from './Pages/User/Payment/PaymentSuccess';
+import PaymentCancel from './Pages/User/Payment/PaymentCancel';
 import Profile from './Pages/User/Profile'
 import NotFound from './Pages/User/NotFound';
 import UserRoot from './Pages/User/UserRoot';
@@ -24,10 +24,10 @@ function App() {
           <Route path='series/:id' element={<Series />} />
           <Route path='movie/:id' element={<Movie />} />
           <Route path='allshows' element={<AllShows />} />
-          <Route path='blog' element={<Blog />} />
-          <Route path='contact' element={<Contact />} />
           <Route path='profile' element={<Profile />} />
           <Route path='payment' element={<Payment />} />
+          <Route path="/payment-success" element={<PaymentSuccess/>} />
+          <Route path="/payment-cancel" element={<PaymentCancel/>} />
           <Route path='login' element={<UserLogin />} />
           <Route path='register' element={<UserRegister />} />
           <Route path='*' element={<NotFound />} />

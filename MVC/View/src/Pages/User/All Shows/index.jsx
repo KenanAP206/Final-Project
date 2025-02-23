@@ -300,6 +300,7 @@ const Pagination = () => {
               episode={item.episode}
               rating={item.rating}
               id={item._id}
+              premium={item.premium}
             />
           ))}
         </div>

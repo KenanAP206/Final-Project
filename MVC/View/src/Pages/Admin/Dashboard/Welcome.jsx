@@ -9,9 +9,9 @@ const Welcome = () => {
         marginTop: '10px', 
         marginBottom: '20px', 
         padding: '20px', 
-        background: 'linear-gradient(90deg,rgb(130, 106, 196),rgb(101, 60, 177))', // Background color
-        borderRadius: '8px', // Rounded corners
-        color: '#fff' // Text color
+        background: 'linear-gradient(90deg,rgb(130, 106, 196),rgb(101, 60, 177))', 
+        borderRadius: '8px', 
+        color: '#fff' 
       }}
     >
       <Typography variant="h4" component="h1" gutterBottom>

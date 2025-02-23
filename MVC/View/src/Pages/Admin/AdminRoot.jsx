@@ -1,4 +1,3 @@
-// Pages/Admin/AdminRoot.jsx
 import { Admin, Resource, fetchUtils, radiantLightTheme, radiantDarkTheme, Login,  } from 'react-admin';
 import { UserList } from './UsersPage/Users';
 import UserEdit from './EditPage/UserEdit.jsx'
@@ -7,11 +6,10 @@ import { ShowList } from './ShowsPage/Shows';
 import ShowEdit from './EditPage/ShowsEdit'
 import ShowCreate from './CreatePage/ShowsCreate.jsx'
 import Dashboard from './Dashboard';
-import MovieIcon from '@mui/icons-material/Movie'; // Material UI icon
+import MovieIcon from '@mui/icons-material/Movie'; 
 import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@mui/material';
 
-// httpClient'ı memoize edelim
 const createHttpClient = () => (url, options = {}) => {
     if (!options.headers) {
         options.headers = new Headers({ Accept: 'application/json' });
@@ -23,7 +21,6 @@ const createHttpClient = () => (url, options = {}) => {
     return fetchUtils.fetchJson(url, options);
 };
 
-// dataProvider'ı memoize edelim
 const createDataProvider = (httpClient) => ({
     getList: async (resource, params) => {
         const { page, perPage } = params.pagination;
@@ -102,7 +99,6 @@ const createDataProvider = (httpClient) => ({
 const authProvider = {
     login: async ({ username, password }) => {
         try {
-            // İlk login isteği
             const loginResponse = await fetch('http://localhost:3000/users/login', {
                 method: 'POST',
                 body: JSON.stringify({ email: username, password }),
@@ -115,14 +111,12 @@ const authProvider = {
                 throw new Error('Login failed');
             }
 
-            // Kullanıcıdan onay kodunu al
             const confirmationCode = prompt('Lütfen email adresinize gönderilen onay kodunu giriniz:');
 
             if (!confirmationCode) {
                 throw new Error('Onay kodu gerekli');
             }
 
-            // Onay kodunu doğrula
             const confirmResponse = await fetch('http://localhost:3000/users/confirm', {
                 method: 'POST',
                 body: JSON.stringify({ confirmPassword: confirmationCode }),
@@ -135,12 +129,10 @@ const authProvider = {
                 throw new Error('Onaylama başarısız');
             }
 
-            // Admin kontrolü
             if (confirmData.user.role !== 'admin') {
                 throw new Error('Bu giriş sadece adminler içindir!');
             }
 
-            // Token'ı kaydet
             localStorage.setItem('token', confirmData.token);
             localStorage.setItem('admin', 'true');
             localStorage.setItem('permissions', JSON.stringify({
@@ -176,7 +168,6 @@ const authProvider = {
     getPermissions: () => Promise.resolve(),
 };
 
-// Confirmation Modal Component
 const ConfirmationModal = ({ open, onClose, onConfirm }) => {
     const [code, setCode] = useState('');
 
@@ -197,7 +188,7 @@ const ConfirmationModal = ({ open, onClose, onConfirm }) => {
                     fullWidth
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
-                    placeholder="Email'inize gönderilen kodu giriniz"
+                    placeholder="Enter the code sent to your email"
                 />
             </DialogContent>
             <DialogActions>
@@ -224,7 +215,6 @@ const AdminRoot = () => {
         ...authProvider,
         login: async (params) => {
             try {
-                // İlk login isteği
                 const loginResponse = await fetch('http://localhost:3000/users/login', {
                     method: 'POST',
                     body: JSON.stringify({ email: params.username, password: params.password }),
@@ -237,11 +227,9 @@ const AdminRoot = () => {
                     throw new Error('Login failed');
                 }
 
-                // Login başarılıysa credentials'ı sakla ve modal'ı göster
                 setLoginCredentials(params);
                 setShowConfirmation(true);
 
-                // Promise'ı beklemede tut
                 return new Promise((resolve, reject) => {
                     window.confirmLogin = async (confirmationCode) => {
                         try {
@@ -254,11 +242,11 @@ const AdminRoot = () => {
                             const confirmData = await confirmResponse.json();
 
                             if (!confirmData.token) {
-                                throw new Error('Onaylama başarısız');
+                                throw new Error('Error in confirm');
                             }
 
                             if (confirmData.user.role !== 'admin') {
-                                throw new Error('Bu giriş sadece adminler içindir!');
+                                throw new Error('This login only for admins!');
                             }
 
                             localStorage.setItem('token', confirmData.token);
@@ -274,7 +262,7 @@ const AdminRoot = () => {
                     };
 
                     window.rejectLogin = () => {
-                        reject(new Error('Doğrulama iptal edildi'));
+                        reject(new Error('Confirm cancelled'));
                     };
                 });
             } catch (error) {

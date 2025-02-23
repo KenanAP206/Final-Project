@@ -81,14 +81,14 @@ function index() {
                     <div className="hc-tags">
                         <p>2019 • <span>18+</span> • 4 seasons • Anime</p>
                     </div>
-                    <p>Sentenced to death, ninja Gabimaru the Hollow finds himself apathetic.</p>
+                    <p>Story of Deku who has no quirk or power.</p>
                     <button><RiPlayLargeLine/> Watch</button>
                 </div>
                 </div>
                 <div className="hero-card">
                     <img alt="" srcset="https://imgs.search.brave.com/Gn7aridMjjNmfjFFIwDVY9fCTxgNd_eaNzuViQly3rM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jNC53/YWxscGFwZXJmbGFy/ZS5jb20vd2FsbHBh/cGVyLzMyMy80NzIv/OTMxL2hlbGwtcy1w/YXJhZGlzZS1qaWdv/a3VyYWt1LWFuaW1l/LWJveXMtYW5pbWUt/Z2lybHMtaGQtd2Fs/bHBhcGVyLXByZXZp/ZXcuanBn" />
                <div className="hc-txt">
-               <h3>My Hero Academia</h3>
+               <h3>Hell's Paradise</h3>
                     <div className="hc-tags">
                         <p>2019 • <span>18+</span> • 4 seasons • Anime</p>
                     </div>

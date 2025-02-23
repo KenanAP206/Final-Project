@@ -9,9 +9,11 @@ const AuthMiddleware = (req, res, next) => {
     }
     try {
         let decoded = jwt.verify(token, secretKey);
+        console.log('Decoded Token:', decoded);
         req.user = decoded;
         next();
     } catch (error) {
+        console.error('Token verification error:', error);
         res.status(401).send("Your token is wrong.");
     }
 };

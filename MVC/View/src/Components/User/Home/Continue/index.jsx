@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import './Continue.css'
-import {NavLink} from 'react-router-dom'
-import { FaChevronRight } from "react-icons/fa6";
 import Card from '../../Card2/index'
 import { showContext } from '../../../../Context/ShowContext';
 import { useContext } from 'react';
@@ -10,6 +8,12 @@ function index() {
   let [filteredShows, setFilteredShows] = useState([])
   let {shows,loading}=useContext(showContext)
   const token = localStorage.getItem('token');
+
+  if (!token) {
+    console.error("Token is not available");
+    return null; 
+  }
+
   const tokenParts = token.split('.');
   const payload = JSON.parse(atob(tokenParts[1]));
   const userId = payload.userId;
@@ -28,6 +32,12 @@ function index() {
     fetchuser()
   })
   
+  if (!token) {
+    return (
+      <section id='continue'>
+      </section>
+    );
+  }
 
   return (
     <section id='continue'>

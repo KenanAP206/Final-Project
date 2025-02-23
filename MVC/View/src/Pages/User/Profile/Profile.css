@@ -48,7 +48,7 @@
                 color: #ffffff;
                 font-size: 16px;
                 font-weight: 700;
-                text-shadow: 1px 1px 0px rgba(0, 0, 0, 1); /* Gölge efekti */
+                text-shadow: 1px 1px 0px rgba(0, 0, 0, 1); 
 
             }
 
@@ -64,33 +64,22 @@
                 transition: background-color 0.3s, border-color 0.3s;
             }
 
-            /* Checkbox Checked State */
             .checkbox-container input[type="checkbox"]:checked+label::before {
                 background-color: #9500ff;
-                /* Seçili arka plan rengi */
                 border-color: #9500ff;
-                /* Seçili kenar rengi */
             }
 
-            /* Checkbox Checked State - Checkmark */
             .checkbox-container input[type="checkbox"]:checked+label::after {
                 content: '';
                 position: absolute;
                 
                 right: 7px;
-                /* Checkmark konumu */
                 top: 5px;
-                /* Checkmark konumu */
                 width: 5px;
-                /* Checkmark genişliği */
                 height: 10px;
-                /* Checkmark yüksekliği */
                 border: solid white;
-                /* Checkmark rengi */
                 border-width: 0 2px 2px 0;
-                /* Checkmark şekli */
                 transform: rotate(45deg);
-                /* Checkmark döndürme */
             }
         }
         
@@ -182,6 +171,26 @@
     flex-direction: column;
     height: max-content;
     width: 400px;
+}
+
+.navsidebar{
+    background-color: #1b1b1b;
+    font-weight: 600;
+    font-size: 25px;
+    padding: 10px;
+
+    a{
+        border-radius: 5px;
+        margin: 5px 0;
+        padding: 10px 20px;
+        background-color: #000000;
+
+        &:hover{
+            background-color: #00000085;
+
+        }
+    }
+
 }
 
 .profile-card,

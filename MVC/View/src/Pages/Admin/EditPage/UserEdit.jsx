@@ -1,4 +1,3 @@
-// Pages/Admin/Dashboard/UserEdit.jsx
 import {
     Edit,
     SimpleForm,
@@ -7,7 +6,8 @@ import {
     required,
     email,
     Notification,
-    PasswordInput
+    PasswordInput,
+    ImageField
 } from 'react-admin';
 import { Card, CardContent, Button } from '@mui/material';
 import { useNotify } from 'react-admin';
@@ -65,6 +65,9 @@ const UserEdit = () => {
             <Card>
                 <CardContent>
                     <SimpleForm>
+                    <ImageField source="image" title="name" sx={{ '& img': { maxWidth: 200 } }} />
+                    <TextInput source="image" fullWidth helperText="Enter image URL" />
+
                         <TextInput disabled source="id" />
                         <TextInput 
                             source="username" 

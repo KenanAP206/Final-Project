@@ -9,7 +9,7 @@ const EpisodeList = ({ maxEpisodes }) => {
     const [episodes, setEpisodes] = useState([]);
     const [newEpisode, setNewEpisode] = useState({ link: '', isNew: false });
     const notify = useNotify();
-    const record = useRecordContext(); // This gets the current show being edited
+    const record = useRecordContext(); 
     const [orderedEpisodes, setOrderedEpisodes] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [editingEpisode, setEditingEpisode] = useState({ link: '', isNew: false });
@@ -33,7 +33,6 @@ const EpisodeList = ({ maxEpisodes }) => {
     }, [record?.id]);
 
     useEffect(() => {
-        // When episodes load, add order property if not exists
         setOrderedEpisodes(episodes.map((episode, index) => ({
             ...episode,
             order: episode.order ?? index + 1
@@ -64,13 +63,11 @@ const EpisodeList = ({ maxEpisodes }) => {
             return;
         }
 
-        // Check if the show type is 'movie' and if an episode already exists
         if (record.type === 'movie' && episodes.length > 0) {
             notify('Movies can only have one episode.', { type: 'warning' });
             return;
         }
 
-        // Check if we've reached the episode limit for series
         if (maxEpisodes && episodes.length >= maxEpisodes) {
             notify('Cannot add more episodes. Maximum limit reached.', { type: 'warning' });
             return;
@@ -110,7 +107,6 @@ const EpisodeList = ({ maxEpisodes }) => {
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
 
-        // Update order numbers
         const updatedItems = items.map((item, index) => ({
             ...item,
             order: index + 1
@@ -118,7 +114,6 @@ const EpisodeList = ({ maxEpisodes }) => {
 
         setOrderedEpisodes(updatedItems);
 
-        // Update order in backend
         try {
             await Promise.all(updatedItems.map(episode => 
                 fetch(`http://localhost:3000/episodes/${episode.id}`, {

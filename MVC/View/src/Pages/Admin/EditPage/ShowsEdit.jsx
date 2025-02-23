@@ -32,7 +32,6 @@ const roleChoices = [
     { id: 'Historical', name: 'Historical' },
     { id: 'Martial Arts', name: 'Martial Arts' }
 ];
-// Create a new component for the episodes section
 const EpisodesSection = () => {
     const record = useRecordContext();
 
@@ -120,7 +119,6 @@ const ShowEdit = () => (
             <TextInput source="trailer" fullWidth />
             <BooleanInput source="isNew" />
 
-            {/* Replace the old episodes section with the new component */}
             <EpisodesSection />
         </SimpleForm>
     </Edit>

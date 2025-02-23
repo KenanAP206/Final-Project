@@ -3,6 +3,9 @@ import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import Stripe from 'stripe';
+
+const stripe = new Stripe("sk_test_51QvduDGVEa9lUrQzToGJLwQRDXVy41QVsTQcRbhBs7NSPHzZ7eHp80u3INHSRmEVmcp46kMWsO4BmEXneEtWELf300Y4STM8bV");
 
 const secretKey = "SECRETKEY";
 
@@ -33,7 +36,6 @@ export const UserController = {
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-      // React Admin için doğru format
       const formattedUser = {
         ...user.toObject(),
         id: user._id
@@ -184,19 +186,16 @@ export const UserController = {
             return res.status(401).json({ error: "Şifre yanlış" });
         }
         
-        // Onay kodu oluştur ve kaydet
         let confirmCode = Math.floor(Math.random() * 999999);
         user.confirmPassword = confirmCode;
         await user.save();
 
-        // Email gönder
         await transporter.sendMail({
             to: user.email,
             subject: "Onay Kodu",
             html: `<h1>Onay Kodunuz: ${confirmCode}</h1>`,
         });
 
-        // Başarılı yanıt
         res.status(200).json({
             success: true,
             message: "Onay kodu email adresinize gönderildi",
@@ -217,11 +216,9 @@ export const UserController = {
             return res.status(400).json({ error: "Geçersiz onay kodu" });
         }
 
-        // Onay kodunu sıfırla
         user.confirmPassword = null;
         await user.save();
 
-        // Eğer register'dan geliyorsa token oluşturma
         if (isFromRegister) {
             return res.status(200).json({
                 success: true,
@@ -229,7 +226,6 @@ export const UserController = {
             });
         }
 
-        // Login'den geliyorsa token oluştur
         const token = jwt.sign(
             { 
                 userId: user._id, 
@@ -238,7 +234,7 @@ export const UserController = {
                 image: user.image
             }, 
             secretKey, 
-            { expiresIn: "2d" }
+            { expiresIn: "1m" }
         );
 
         res.status(200).json({
@@ -259,8 +255,7 @@ export const UserController = {
 
   checkAuth: async (req, res) => {
     try {
-        // Since AuthMiddleware already verified the token and set req.user
-        // We just need to return a success response
+
         res.status(200).json({ 
             authenticated: true,
             user: req.user 
@@ -295,5 +290,61 @@ export const UserController = {
       res.status(500).json({ error: error.message });
     }
   },
+  createCheckoutSession: async (req, res) => {
+    try {
+      const userId = req.user.id; 
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product: 'prod_RpIeIDYd8ikSsK',
+              unit_amount: 1000, 
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: 'http://localhost:5173/payment-success',
+        cancel_url: 'http://localhost:5173/payment-cancel',
+        metadata: {
+          userId: userId
+        }
+      });
 
+      res.json({ id: session.id });
+    } catch (error) {
+      console.error('Stripe error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  // Webhook handler
+  handleWebhook: async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.rawBody, sig, 'whsec_b38bbfae325c876640b29c5e1c1e39c499e633b58224ccb3c41fc24b2de77a3a');
+    } catch (err) {
+        console.error('Webhook Error:', err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === 'checkout.session.completed') {
+        const userId = event.data.object.metadata.userId;
+
+        try {
+            await UserModel.findByIdAndUpdate(userId, { ispremium: true });
+            console.log(`User ${userId} is now premium!`);
+    
+        } catch (error) {
+            console.error('Error updating user:', error);
+            return res.status(500).json({ error: 'Failed to update user status' });
+        }
+    }
+
+    res.json({ received: true });
+  }
 }; 

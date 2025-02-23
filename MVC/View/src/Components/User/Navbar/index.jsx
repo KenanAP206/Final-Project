@@ -14,6 +14,7 @@ function index() {
   let [value, setValue] = useState('');
   let [shows, setShows] = useState([]);
   let [isOpen, setisOpen] = useState(false)
+  let [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const profileBarRef = useRef(null);
   const token = localStorage.getItem('token');
   const tokenParts = token ? token.split('.') : [];
@@ -78,6 +79,10 @@ function index() {
     };
   }, []);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <header>
       <nav className='navbarim'>
@@ -85,8 +90,8 @@ function index() {
         <div className="nav-mid">
           <NavLink to='/' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Home</NavLink>
           <NavLink to='/allshows' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Shows</NavLink>
-          <NavLink to='/blog' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Blog</NavLink>
-          <NavLink to='/contact' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Contact</NavLink>
+          <a href="#trailer">Trailers</a>
+          <NavLink to='/payment' style={({ isActive }) => ({ color: isActive ? '#AC01FB' : 'white' })}>Premium</NavLink>
         </div>
         <div className="nav-r">
           
@@ -126,7 +131,6 @@ function index() {
           ) : (null)}
           </div>
 
-          <MdOutlineNotificationsActive className='notific border-white border-1' />
 
          <div className="profile-btn">
          <FaUser className='bg-white user-btn' onClick={toggleProfileBar} />
@@ -153,9 +157,22 @@ function index() {
        
 
          </div>
-          <GiHamburgerMenu className='bg-white menu-btn' />
+          <GiHamburgerMenu className='bg-white menu-btn' onClick={toggleSidebar} />
         </div>
       </nav>
+      {isSidebarOpen && (
+        <>
+          <div className="fixed inset-0 bg-black opacity-50 z-40" onClick={toggleSidebar}></div>
+          <div className="navsidebar fixed top-0 right-0 w-64 h-full text-white shadow-lg z-50 p-4">
+ 
+            <div className=" p-4">
+              <NavLink to='/allshows' className="block py-2 hover:bg-gray-700">All Shows</NavLink>
+              <NavLink to='/profile' className="block py-2 hover:bg-gray-700">Profile</NavLink>
+              <NavLink to='/' className="block py-2 hover:bg-gray-700">Home</NavLink>
+            </div>
+          </div>
+        </>
+      )}
     </header>
   )
 }

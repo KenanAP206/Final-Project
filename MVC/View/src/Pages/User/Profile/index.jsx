@@ -172,7 +172,9 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token');
+            console.log('Token:', token);
             if (!token) {
+                console.log('No token found, navigating to profile.');
                 navigate('/profile');
                 return;
             }
@@ -181,6 +183,7 @@ const ProfilePage = () => {
                 const tokenParts = token.split('.');
                 const payload = JSON.parse(atob(tokenParts[1]));
                 const userId = payload.userId;
+                console.log('User ID:', userId);
 
                 const response = await fetch(`http://localhost:3000/users/${userId}`, {
                     headers: {
@@ -189,7 +192,9 @@ const ProfilePage = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch user data');
+                    const errorText = await response.text(); 
+                    console.log('Error response:', errorText);
+                    throw new Error(errorText);
                 }
 
                 const { data } = await response.json();
@@ -203,8 +208,8 @@ const ProfilePage = () => {
                     favorites: data.favorites || []
                 });
             } catch (error) {
-                console.error('Error:', error);
-                navigate('/profile');
+                console.error('Error fetching user data:', error);
+                alert('Failed to fetch user data: ' + error.message); 
             }
         };
 
@@ -225,8 +230,8 @@ const ProfilePage = () => {
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Password update failed');
+                    const errorText = await response.text(); 
+                    throw new Error(errorText); 
                 }
 
                 alert('Password updated successfully!');
@@ -241,8 +246,8 @@ const ProfilePage = () => {
                 });
 
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Update failed');
+                    const errorText = await response.text(); 
+                    throw new Error(errorText); 
                 }
 
                 const { data } = await response.json();
@@ -345,30 +350,10 @@ const ProfilePage = () => {
                             Manage
                         </button>
                     </div>
-                    <div className="detail-item">
-                        <label>Language*</label>
-                        <p>Not specified</p>
-                        <button 
-                            className="edit-button"
-                            onClick={() => setIsModalOpen(prev => ({ ...prev, language: true }))}
-                        >
-                            Edit
-                        </button>
-                    </div>
+          
                 </div>
             </div>
-            <div className="billing-details">
-                    <h3>Billing Details</h3>
-                    <hr />
-                    <p>Your next billing date is not specified.</p>
-                    <button className="cancel-button">Cancel Membership</button>
-                    <div className="plan-type">
-                        <label>Plan Type</label>
-                        <p>Not specified</p>
-                    </div>
-                    <button className="edit-button">Update Payment info</button>
-                </div>
-            {/* Modals */}
+    
             <EditModal 
                 isOpen={isModalOpen.profile}
                 onClose={() => setIsModalOpen(prev => ({ ...prev, profile: false }))}

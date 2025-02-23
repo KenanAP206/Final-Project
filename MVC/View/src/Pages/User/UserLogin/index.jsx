@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { NavLink } from 'react-router';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
   password: Yup.string().required('Password is required'),
@@ -26,6 +26,12 @@ function Login() {
       setIsConfirmed(true);
     } catch (error) {
       console.error('Login error:', error.response ? error.response.data : error.message);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: error.response?.data?.message || 'An error occurred while logging in',
+      });
     }
   };
 
@@ -36,6 +42,13 @@ function Login() {
         { withCredentials: true }
       );
       console.log('Confirmation successful:', response.data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Login successful!',
+        timer: 2000,
+        showConfirmButton: false,
+      });
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         window.location.href = '/profile';
@@ -69,7 +82,7 @@ function Login() {
 
             {isConfirmed && (
               <div className="form-group">
-                <label htmlFor="confirmationCode">Onay Kodu</label>
+                <label htmlFor="confirmationCode">Confirm Code</label>
                 <Field
                   name="confirmationCode"
                   type="text"
@@ -79,7 +92,7 @@ function Login() {
                   }}
                 />
                 <ErrorMessage name="confirmationCode" component="div" className="error" />
-                <button type="button" onClick={handleConfirm}>Onayla</button>
+                <button type="button" onClick={handleConfirm}>Confirm</button>
               </div>
             )}
 

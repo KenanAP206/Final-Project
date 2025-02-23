@@ -2,12 +2,11 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
 const SectionChart = ({ data }) => {
-  // Check if data is defined and is an array
   const totalOrders = data ? data.length : 0;
   const pendingOrders = data ? data.filter(order => order.status === 'pending').length : 0;
 
   const chartData = {
-    labels: ['Toplam Sipariş', 'Bekleyen Sipariş'], // Example labels
+    labels: ['Toplam Sipariş', 'Bekleyen Sipariş'], 
     datasets: [
       {
         label: 'Siparişler',
