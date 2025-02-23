@@ -234,7 +234,7 @@ export const UserController = {
                 image: user.image
             }, 
             secretKey, 
-            { expiresIn: "1m" }
+            { expiresIn: "30d" }
         );
 
         res.status(200).json({
